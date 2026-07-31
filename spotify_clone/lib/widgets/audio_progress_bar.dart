@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import '../providers/audio_provider.dart';
 
 class AudioProgressBar extends StatefulWidget {
@@ -41,17 +42,14 @@ class _AudioProgressBarState extends State<AudioProgressBar> {
         return SliderTheme(
           data: SliderThemeData(
             trackHeight: widget.isMini ? 2 : 4,
-            thumbShape: RoundSliderThumbShape(
-              enabledThumbRadius: widget.isMini ? 4 : 6,
-            ),
+            thumbShape: SliderComponentShape.noThumb,
             overlayShape: widget.isMini
                 ? SliderComponentShape.noOverlay
                 : const RoundSliderOverlayShape(
                     overlayRadius: 14,
                   ),
-            activeTrackColor: Colors.white,
+            activeTrackColor: kPrimary,
             inactiveTrackColor: Colors.grey.withOpacity(0.3),
-            thumbColor: Colors.white,
           ),
           child: Slider(
             min: 0.0,

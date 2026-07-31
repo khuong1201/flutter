@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:spotify_clone/providers/favorite_provider.dart';
 import 'package:spotify_clone/screens/library_screen.dart';
 import 'package:spotify_clone/screens/search_screen.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import 'providers/audio_provider.dart';
 import 'widgets/mini_player.dart';
 import 'screens/home_screen.dart';
@@ -16,7 +17,7 @@ Future<void> main() async {
 
   await Hive.initFlutter();
   await Hive.openBox<String>('favorites_box');
-  // Khởi tạo Background Service trước khi chạy App
+
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.spotifyclone.channel.audio',
     androidNotificationChannelName: 'Audio Playback',
@@ -53,14 +54,22 @@ class SpotifyCloneApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Spotify Clone',
-      scrollBehavior: NoStretchScrollBehavior(),
+      scrollBehavior: const NoStretchScrollBehavior(),
       theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF121212),
+        useMaterial3: true,
         brightness: Brightness.dark,
+        // Tự động gán màu nền mặc định cho toàn app
+        scaffoldBackgroundColor: kBackground,
+        primaryColor: kPrimary,
+        colorScheme: const ColorScheme.dark(
+          primary: kPrimary,
+          surface: kSurface,
+        ),
+        // Cấu hình màu cho BottomNavigationBar mặc định
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.black,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
+          backgroundColor: kSurface,
+          selectedItemColor: kPrimary,
+          unselectedItemColor: kSubtitle,
         ),
       ),
       home: const RootScreen(),

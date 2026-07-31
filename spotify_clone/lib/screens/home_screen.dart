@@ -1,11 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import '../providers/audio_provider.dart';
-import '../repositories/music_repository.dart';
-import '../models/album_model.dart';
 import '../models/track_model.dart';
-import 'album_detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,177 +15,180 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final MusicRepository _repository = MusicRepository();
-  
-  late Future<List<Album>> _albumsFuture;
-  late Future<List<Track>> _tracksFuture;
+  Map<String, dynamic> _homeData = {};
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _albumsFuture = _repository.getAllAlbums();
-    _tracksFuture = _repository.getTracksByIds(['track_01', 'track_02']); 
+    _loadHomeData();
+  }
+
+  Future<void> _loadHomeData() async {
+    try {
+      final String jsonString = await rootBundle.loadString('assets/data/mock_data.json');
+      final data = jsonDecode(jsonString);
+      setState(() {
+        _homeData = data;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator(color: kPrimary)));
+    }
+
+    final sections = _homeData['sections'] as List<dynamic>? ?? [];
+    final tracksData = _homeData['tracks'] as List<dynamic>? ?? [];
+    List<Track> allTracks = tracksData.map((e) => Track.fromJson(e)).toList();
+
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
-      // 1. CHUYỂN SANG CUSTOM SCROLL VIEW
+      backgroundColor: kBackground,
       body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
         slivers: [
-          // 2. AppBar chuyển thành SliverAppBar
+          // AppBar với lời chào Good evening
           SliverAppBar(
-            backgroundColor: const Color(0xFF121212),
-            pinned: true,
-            elevation: 0,
-            title: const Text(
-              'Chào buổi sáng',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            backgroundColor: kBackground,
+            floating: true,
+            pinned: false,
+            title: const Text('Good evening', style: TextStyle(color: kText, fontSize: 22, fontWeight: FontWeight.bold)),
             actions: [
-              IconButton(icon: const Icon(Icons.notifications_none), onPressed: () {}),
-              IconButton(icon: const Icon(Icons.settings), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.notifications_none, color: kText), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.history, color: kText), onPressed: () {}),
+              IconButton(icon: const Icon(Icons.settings_outlined, color: kText), onPressed: () {}),
             ],
           ),
-          
-          // 3. Các khối tĩnh bọc bằng SliverToBoxAdapter
-          const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Album Nổi Bật',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
-          ),
-          
           SliverToBoxAdapter(
-            child: _buildAlbumSection(),
-          ),
-          
-          const SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Text(
-                'Gợi Ý Cho Bạn',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 1. Recently Played (Lưới 2x2)
+                  GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 2.8,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      final item = sections[0]['items'][index];
+                      return GestureDetector(
+                        onTap: () {
+                          if (allTracks.isNotEmpty) {
+                            context.read<AudioProvider>().playTrack(allTracks[index % allTracks.length]);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: kSurface,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: const BorderRadius.horizontal(left: Radius.circular(4)),
+                                child: CachedNetworkImage(imageUrl: item['coverUrl'], width: 56, height: 56, fit: BoxFit.cover),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  item['title'],
+                                  style: const TextStyle(color: kText, fontSize: 13, fontWeight: FontWeight.bold),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 24),
+
+                  // 2. Jump back in (Trượt ngang)
+                  const Text('Jump back in', style: TextStyle(color: kText, fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 180,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: sections[1]['items'].length,
+                      itemBuilder: (context, index) {
+                        final item = sections[1]['items'][index];
+                        return Container(
+                          width: 120,
+                          margin: const EdgeInsets.only(right: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: CachedNetworkImage(imageUrl: item['coverUrl'], width: 120, height: 120, fit: BoxFit.cover),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(item['title'], style: const TextStyle(color: kText, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
+                              Text(item['subtitle'], style: const TextStyle(color: kSubtitle, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+
+                  // 3. Made For You (Banner lớn)
+                  const Text('Made For You', style: TextStyle(color: kText, fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      color: kSurface,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        ClipRRect(
+                          borderRadius: const BorderRadius.horizontal(left: Radius.circular(8)),
+                          child: CachedNetworkImage(imageUrl: sections[2]['items'][0]['coverUrl'], width: 160, height: 160, fit: BoxFit.cover),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text('WEEKLY WRAP', style: TextStyle(color: kPrimary, fontSize: 10, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 4),
+                                Text(sections[2]['items'][0]['title'], style: const TextStyle(color: kText, fontSize: 16, fontWeight: FontWeight.bold)),
+                                const SizedBox(height: 4),
+                                Text(sections[2]['items'][0]['subtitle'], style: const TextStyle(color: kSubtitle, fontSize: 12)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-          
-          // 4. Gọi hàm render danh sách bài hát dạng Sliver
-          _buildTrackSectionSliver(),
-          
-          // 5. Lớp đệm dưới cùng để không bị Mini-player che mất bài hát cuối
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 100),
           ),
         ],
       ),
-    );
-  }
-
-  // Khối vẽ danh sách Album (Cuộn ngang - Giữ nguyên như cũ)
-  Widget _buildAlbumSection() {
-    return FutureBuilder<List<Album>>(
-      future: _albumsFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator(color: Colors.green));
-        }
-        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text('Không có dữ liệu Album', style: TextStyle(color: Colors.grey)),
-          );
-        }
-
-        final albums = snapshot.data!;
-        return SizedBox(
-          height: 200,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: albums.length,
-            itemBuilder: (context, index) {
-              final album = albums[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AlbumDetailScreen(album: album)),
-                  );
-                },
-                child: Container(
-                  width: 140,
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(8), // Bo góc cho ảnh đẹp hơn
-                        child: CachedNetworkImage(imageUrl: album.coverUrl,width: 140, height: 140, fit: BoxFit.cover),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(album.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text(album.artist, style: const TextStyle(color: Colors.grey, fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        );
-      },
-    );
-  }
-
-  // KHỐI MỚI: Vẽ danh sách Bài hát bằng SliverList (Tối ưu render)
-  Widget _buildTrackSectionSliver() {
-    return FutureBuilder<List<Track>>(
-      future: _tracksFuture,
-      builder: (context, snapshot) {
-        // Mọi return bên trong FutureBuilder này đều phải bọc bằng Sliver
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SliverToBoxAdapter(
-            child: Center(child: CircularProgressIndicator(color: Colors.green)),
-          );
-        }
-        if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-          return const SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text('Không có bài hát nào', style: TextStyle(color: Colors.grey)),
-            ),
-          );
-        }
-
-        final tracks = snapshot.data!;
-        
-        // SỬ DỤNG SLIVERLIST THAY CHO LISTVIEW.BUILDER
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final track = tracks[index];
-              return ListTile(
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
-                  child: CachedNetworkImage(imageUrl:track.coverUrl, width: 50, height: 50, fit: BoxFit.cover),
-                ),
-                title: Text(track.title, style: const TextStyle(color: Colors.white)),
-                subtitle: Text(track.artist, style: const TextStyle(color: Colors.grey)),
-                trailing: const Icon(Icons.more_vert, color: Colors.grey),
-                onTap: () {
-                  // Phát nhạc lẻ (1 bài)
-                  context.read<AudioProvider>().playTrack(track);
-                },
-              );
-            },
-            childCount: tracks.length, // Cung cấp số lượng bài hát
-          ),
-        );
-      },
     );
   }
 }

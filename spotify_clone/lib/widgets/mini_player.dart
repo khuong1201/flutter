@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import '../providers/audio_provider.dart';
 import '../screens/full_player_screen.dart';
 import 'audio_progress_bar.dart';
@@ -21,7 +22,7 @@ class MiniPlayer extends StatelessWidget {
         showModalBottomSheet(
           context: context,
           isScrollControlled: true, 
-          backgroundColor: Colors.transparent, 
+          backgroundColor: kBackground, 
           builder: (context) => const FullPlayerScreen(),
         );
       },
@@ -56,12 +57,12 @@ class MiniPlayer extends StatelessWidget {
                       children: [
                         Text(
                           currentTrack.title,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                          style: const TextStyle(color: kText, fontWeight: FontWeight.bold, fontSize: 14),
                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
                         Text(
                           currentTrack.artist,
-                          style: const TextStyle(color: Colors.grey, fontSize: 12),
+                          style: const TextStyle(color: kText, fontSize: 12),
                           maxLines: 1, overflow: TextOverflow.ellipsis,
                         ),
                       ],

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import '../models/album_model.dart';
 import '../models/track_model.dart';
 import '../repositories/music_repository.dart';
@@ -37,7 +38,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: kBackground,
       // KHÔNG dùng AppBar thông thường, chúng ta dùng CustomScrollView
       body: CustomScrollView(
         slivers: [
@@ -50,7 +51,7 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 widget.album.title,
-                style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                style: const TextStyle(fontWeight: FontWeight.bold, color: kText),
               ),
               centerTitle: true,
               background: Stack(
@@ -88,13 +89,13 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                 children: [
                   Text(
                     widget.album.artist,
-                    style: const TextStyle(color: Colors.grey, fontSize: 16),
+                    style: const TextStyle(color: kSubtitle, fontSize: 16),
                   ),
                   const Spacer(),
                   // Nút Play to màu xanh đặc trưng của Spotify
                   Container(
                     decoration: const BoxDecoration(
-                      color: Color(0xFF1DB954), // Spotify Green
+                      color: kPrimary, // Spotify Green
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
@@ -124,12 +125,12 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator(color: Colors.green)),
+                  child: Center(child: CircularProgressIndicator(color: kPrimary)),
                 );
               }
               if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const SliverToBoxAdapter(
-                  child: Center(child: Text('Không có bài hát', style: TextStyle(color: Colors.grey))),
+                  child: Center(child: Text('Không có bài hát', style: TextStyle(color: kSubtitle))),
                 );
               }
 
@@ -141,11 +142,11 @@ class _AlbumDetailScreenState extends State<AlbumDetailScreen> {
                     return ListTile(
                       leading: Text(
                         '${index + 1}', // Số thứ tự bài hát
-                        style: const TextStyle(color: Colors.grey, fontSize: 16),
+                        style: const TextStyle(color: kSubtitle, fontSize: 16),
                       ),
-                      title: Text(track.title, style: const TextStyle(color: Colors.white)),
-                      subtitle: Text(track.artist, style: const TextStyle(color: Colors.grey)),
-                      trailing: const Icon(Icons.more_vert, color: Colors.grey),
+                      title: Text(track.title, style: const TextStyle(color: kText)),
+                      subtitle: Text(track.artist, style: const TextStyle(color: kSubtitle)),
+                      trailing: const Icon(Icons.more_vert, color: kSubtitle),
                       onTap: () {
                         // Phát nhạc và cập nhật Mini-player
                         context.read<AudioProvider>().playPlaylist(_albumTracks, startIndex: index);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:spotify_clone/screens/full_player_screen.dart';
+import 'package:spotify_clone/utils/constants.dart';
 import '../providers/favorite_provider.dart';
 import '../providers/audio_provider.dart';
 import '../models/track_model.dart';
@@ -12,70 +12,99 @@ class LibraryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Lấy danh sách ID đã thả tim từ Hive
     final favoriteIds = context.watch<FavoriteProvider>().favoriteIds;
     final MusicRepository repository = MusicRepository();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212),
+      backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('Thư viện của bạn', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: kBackground,
+        title: Row(
+          children: [
+            const CircleAvatar(backgroundColor: Colors.purple, radius: 16, child: Text('S', style: TextStyle(color: kText))),
+            const SizedBox(width: 12),
+            const Text('Your Library', style: TextStyle(color: kText, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        actions: [
+          IconButton(icon: const Icon(Icons.search, color: kText), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.add, color: kText), onPressed: () {}),
+        ],
       ),
-      body: favoriteIds.isEmpty
-          ? const Center(
-              child: Text(
-                'Chưa có bài hát yêu thích nào!\nHãy bấm nút trái tim ở màn hình phát nhạc.',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 14),
-              ),
-            )
-          : FutureBuilder<List<Track>>(
-              // 2. Kéo dữ liệu bài hát từ file JSON thông qua Repository
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Filter Tabs (Playlists, Artists, Albums)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
+              children: [
+                _buildChip('Playlists', true),
+                const SizedBox(width: 8),
+                _buildChip('Artists', false),
+                const SizedBox(width: 8),
+                _buildChip('Albums', false),
+              ],
+            ),
+          ),
+          const Divider(color: kSurface),
+          
+          // List Liked Songs & Recents
+          Expanded(
+            child: FutureBuilder<List<Track>>(
               future: repository.getTracksByIds(favoriteIds),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator(color: Color(0xFF1DB954)));
-                }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('Không tìm thấy bài hát!', style: TextStyle(color: Colors.grey)));
-                }
-
-                final tracks = snapshot.data!;
-                return ListView.builder(
+                final tracks = snapshot.data ?? [];
+                return ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   physics: const BouncingScrollPhysics(),
-                  itemCount: tracks.length,
-                  itemBuilder: (context, index) {
-                    final track = tracks[index];
-                    return ListTile(
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: CachedNetworkImage(
-                          imageUrl: track.coverUrl, 
-                          width: 50, 
-                          height: 50, 
-                          fit: BoxFit.cover,
+                  children: [
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Container(
+                        width: 50, height: 50,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(colors: [Colors.indigo, Colors.blueGrey]),
+                          borderRadius: BorderRadius.circular(4),
                         ),
+                        child: const Icon(Icons.favorite, color: kText),
                       ),
-                      title: Text(track.title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                      subtitle: Text(track.artist, style: const TextStyle(color: Colors.grey)),
-                      trailing: const Icon(Icons.favorite, color: Color(0xFF1DB954)),
-                      onTap: () {
-                        // Bấm vào phát nhạc luôn
-                        context.read<AudioProvider>().playTrack(track);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const FullPlayerScreen(),
+                      title: const Text('Liked Songs', style: TextStyle(color: kText, fontWeight: FontWeight.bold)),
+                      subtitle: Text('Playlist • ${tracks.length} songs', style: const TextStyle(color: kSubtitle)),
+                    ),
+                    const SizedBox(height: 10),
+                    ...tracks.map((track) => ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: ClipRRect(
+                            borderRadius: BorderRadius.circular(4),
+                            child: CachedNetworkImage(imageUrl: track.coverUrl, width: 50, height: 50, fit: BoxFit.cover),
                           ),
-                        );
-                      },
-                    );
-                  },
+                          title: Text(track.title, style: const TextStyle(color: kText, fontWeight: FontWeight.bold)),
+                          subtitle: Text(track.artist, style: const TextStyle(color: kSubtitle)),
+                          onTap: () => context.read<AudioProvider>().playTrack(track),
+                        )),
+                  ],
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget SystemChip(String label, bool isSelected) {
+    return _buildChip(label, isSelected);
+  }
+
+  Widget _buildChip(String label, bool isSelected) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(
+        color: isSelected ? kPrimary : kSurface,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(label, style: TextStyle(color: isSelected ? Colors.black : kText, fontWeight: FontWeight.bold, fontSize: 12)),
     );
   }
 }
