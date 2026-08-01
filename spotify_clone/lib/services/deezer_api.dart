@@ -19,4 +19,7 @@ class DeezerApi {
   // ARTIST
   // =========================
   static String artistAlbums(int artistId) => "$baseUrl/artist/$artistId/albums";
+
+
+  static String genres() => "$baseUrl/genre";
 }

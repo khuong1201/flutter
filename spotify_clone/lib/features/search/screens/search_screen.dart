@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:spotify_clone/app/constants.dart';
 import 'package:spotify_clone/features/search/widgets/browse_categories_grid.dart';
 import 'package:spotify_clone/features/search/widgets/search_bar_widget.dart';
@@ -26,19 +24,22 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _loadData();
+    _loadDataFromApi();
   }
 
-  Future<void> _loadData() async {
+  // Gọi hoàn toàn bằng Deezer API thật, không dùng rootBundle / mock_data.json nữa
+  Future<void> _loadDataFromApi() async {
     try {
-      final tracks = await _repository.getTopTracks();
-      final String jsonString = await rootBundle.loadString('assets/data/mock_data.json');
-      final data = jsonDecode(jsonString);
+      final tracksFuture = _repository.getTopTracks();
+      final categoriesFuture = _repository.getCategories();
+
+      final results = await Future.wait([tracksFuture, categoriesFuture]);
+
       if (mounted) {
         setState(() {
-          _allTracks = tracks;
-          _filteredTracks = tracks;
-          _categories = data['categories'] ?? [];
+          _allTracks = results[0] as List<Track>;
+          _filteredTracks = _allTracks;
+          _categories = results[1] as List<dynamic>;
           _isLoading = false;
         });
       }
@@ -53,7 +54,8 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       _isSearching = query.isNotEmpty;
       _filteredTracks = _allTracks
-          .where((t) => t.title.toLowerCase().contains(query.toLowerCase()) || t.artistName.toLowerCase().contains(query.toLowerCase()))
+          .where((t) => t.title.toLowerCase().contains(query.toLowerCase()) || 
+                        t.artistName.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
   }

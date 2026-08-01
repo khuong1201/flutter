@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:spotify_clone/services/deezer_api.dart';
 import 'package:spotify_clone/shared/models/track_model.dart';
 
-
-
 class MusicRepository {
   // 1. Tìm kiếm bài hát theo từ khóa
   Future<List<Track>> searchTracks(String query) async {
@@ -75,5 +73,42 @@ class MusicRepository {
     }
     return [];
   }
-  
+
+  // 5. Lấy danh sách thể loại nhạc từ Deezer API (Thay thế cho mock categories)
+  Future<List<dynamic>> getCategories() async {
+    try {
+      final url = Uri.parse(DeezerApi.genres());
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> list = data['data'] ?? [];
+        
+        // Loại bỏ thể loại có id = 0 (thường là "All" không có hình ảnh)
+        final filteredList = list.where((g) => g['id'] != 0).toList();
+
+        // Chuyển đổi dữ liệu sang dạng map tương thích với UI grid view hiện tại
+        return filteredList.map((genre) {
+          return {
+            'title': genre['name'] ?? 'Genre',
+            'color': _getRandomColorHex(genre['id']),
+            'cover': genre['picture_medium'] ?? '',
+          };
+        }).toList();
+      }
+    } catch (e) {
+      print('Lỗi gọi Deezer API genres: $e');
+    }
+    return [];
+  }
+
+  // Hàm phụ trợ tạo màu ngẫu nhiên cho danh mục thể loại
+  String _getRandomColorHex(int id) {
+    const colors = [
+      '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', 
+      '#2196F3', '#009688', '#4CAF50', '#FF9800', 
+      '#FF5722', '#795548', '#607D8B'
+    ];
+    return colors[id % colors.length];
+  }
 }

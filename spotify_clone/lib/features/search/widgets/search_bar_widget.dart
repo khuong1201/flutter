@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:spotify_clone/app/constants.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final ValueChanged<String> onChanged;
@@ -11,7 +12,7 @@ class SearchBarWidget extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: TextField(
         onChanged: onChanged,
-        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
+        style: const TextStyle(color: kText, fontWeight: FontWeight.w500),
         decoration: InputDecoration(
           hintText: 'What do you want to listen to?',
           hintStyle: const TextStyle(color: Colors.grey),
