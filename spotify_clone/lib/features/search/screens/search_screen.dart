@@ -39,7 +39,7 @@ class _SearchScreenState extends State<SearchScreen> {
         setState(() {
           _allTracks = results[0] as List<Track>;
           _filteredTracks = _allTracks;
-          _categories = results[1] as List<dynamic>;
+          _categories = results[1];
           _isLoading = false;
         });
       }
