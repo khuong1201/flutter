@@ -4,11 +4,169 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider     = "prisma-client"
-  output       = "../generated/prisma"
-  moduleFormat = "cjs"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id             String    @id @default(uuid()) @db.Uuid
+  email          String    @unique @db.VarChar(100)
+  passwordHash   String?   @map("password_hash") @db.VarChar(255)
+  provider       String?   @db.VarChar(50)
+  providerId     String?   @map("provider_id") @db.VarChar(255)
+  fullName       String    @map("full_name") @db.VarChar(100)
+  avatarUrl      String?   @map("avatar_url") @db.VarChar(255)
+  targetLanguage String    @map("target_language") @db.VarChar(10)
+  targetLevel    String?   @map("target_level") @db.VarChar(20)
+  xpPoints       Int       @default(0) @map("xp_points")
+  currentStreak  Int       @default(0) @map("current_streak")
+  longestStreak  Int       @default(0) @map("longest_streak")
+  lastStudyDate  DateTime? @map("last_study_date")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  progress    UserProgress[]
+  reviewLogs  ReviewLog[]
+  userLessons UserLesson[]
+
+  @@map("users")
+}
+
+model Level {
+  id       Int    @id @default(autoincrement())
+  code     String @unique @db.VarChar(20)
+  name     String @db.VarChar(50)
+  language String @db.VarChar(10)
+
+  lessons Lesson[]
+
+  @@map("levels")
+}
+
+model Lesson {
+  id         Int    @id @default(autoincrement())
+  levelId    Int    @map("level_id")
+  title      String @db.VarChar(150)
+  orderIndex Int    @map("order_index")
+
+  level       Level             @relation(fields: [levelId], references: [id])
+  characters  LessonCharacter[]
+  userLessons UserLesson[]
+
+  @@map("lessons")
+}
+
+model Radical {
+  id          Int    @id @default(autoincrement())
+  radicalText String @map("radical_text") @db.VarChar(5)
+  meaning     String @db.VarChar(100)
+  variants    Json?
+
+  characters CharacterRadical[]
+
+  @@map("radicals")
+}
+
+model Character {
+  id            Int     @id @default(autoincrement())
+  charText      String  @map("char_text") @db.VarChar(5)
+  language      String  @db.VarChar(10)
+  meaning       String  @db.Text
+  pronunciation Json?
+  audioKey      String? @map("audio_key") @db.VarChar(255)
+  strokeData    Json    @map("stroke_data")
+
+  lessons      LessonCharacter[]
+  radicals     CharacterRadical[]
+  vocabularies Vocabulary[]
+  progress     UserProgress[]
+  reviewLogs   ReviewLog[]
+
+  @@unique([charText, language])
+  @@map("characters")
+}
+
+model CharacterRadical {
+  characterId Int @map("character_id")
+  radicalId   Int @map("radical_id")
+
+  character Character @relation(fields: [characterId], references: [id])
+  radical   Radical   @relation(fields: [radicalId], references: [id])
+
+  @@id([characterId, radicalId])
+  @@map("character_radicals")
+}
+
+model LessonCharacter {
+  lessonId    Int @map("lesson_id")
+  characterId Int @map("character_id")
+  orderIndex  Int @map("order_index")
+
+  lesson    Lesson    @relation(fields: [lessonId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@id([lessonId, characterId])
+  @@map("lesson_characters")
+}
+
+model Vocabulary {
+  id            Int     @id @default(autoincrement())
+  characterId   Int     @map("character_id")
+  word          String  @db.VarChar(50)
+  meaning       String  @db.VarChar(255)
+  pronunciation String? @db.VarChar(100)
+
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@map("vocabularies")
+}
+
+model UserProgress {
+  id                 String   @id @default(uuid()) @db.Uuid
+  userId             String   @map("user_id") @db.Uuid
+  characterId        Int      @map("character_id")
+  status             String   @default("learning") @db.VarChar(20)
+  easeFactor         Decimal  @default(2.50) @map("ease_factor") @db.Decimal(5, 2)
+  intervalDays       Int      @default(0) @map("interval_days")
+  nextReviewAt       DateTime @map("next_review_at")
+  totalReviews       Int      @default(0) @map("total_reviews")
+  consecutiveCorrect Int      @default(0) @map("consecutive_correct")
+
+  user      User      @relation(fields: [userId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@map("user_progress")
+}
+
+model ReviewLog {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       String   @map("user_id") @db.Uuid
+  characterId  Int      @map("character_id")
+  actionType   String   @map("action_type") @db.VarChar(20)
+  grade        Int
+  errorDetails Json?    @map("error_details")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [id])
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@map("review_logs")
+}
+
+model UserLesson {
+  userId      String    @map("user_id") @db.Uuid
+  lessonId    Int       @map("lesson_id")
+  status      String    @default("locked") @db.VarChar(20)
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  lesson Lesson @relation(fields: [lessonId], references: [id])
+
+  @@id([userId, lessonId])
+  @@map("user_lessons")
 }

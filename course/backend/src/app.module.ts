@@ -6,6 +6,13 @@ import redisConfig from './config/redis.config';
 import { PrismaModule } from './database/prisma.module';
 import { RedisModule } from './providers/redis/redis.module';
 import { HealthModule } from './modules/health/health.module';
+import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CharactersModule } from './modules/characters/characters.module';
+import { LessonsModule } from './modules/lessons/lessons.module';
+import { ProgressModule } from './modules/progress/progress.module';
+import { PracticeModule } from './modules/practice/practice.module';
+import { LevelsModule } from './modules/levels/levels.module';
 
 @Module({
   imports: [
@@ -16,6 +23,13 @@ import { HealthModule } from './modules/health/health.module';
     PrismaModule,
     RedisModule,
     HealthModule,
+    UsersModule,
+    AuthModule,
+    CharactersModule,
+    LessonsModule,
+    ProgressModule,
+    PracticeModule,
+    LevelsModule,
   ],
   controllers: [],
   providers: [],

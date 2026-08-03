@@ -12,3 +12,5 @@ coverage/
 .windsurf/
 skills-lock.json
 AGENTS.md
+/scripts
+/data
