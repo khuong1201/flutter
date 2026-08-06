@@ -1,0 +1,28 @@
+{
+  "@@locale": "en",
+
+  "loginTitle": "Login",
+  "loginWelcome": "Welcome back to Zenith Lingua",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "loginButton": "Sign In",
+
+  "homeGreeting": "Good morning",
+  "dailyGoal": "Daily Goal",
+  "roadmapTitle": "Your Roadmap",
+
+  "emptyEmailError": "Please enter your email",
+  "invalidEmailError": "Please enter a valid email address",
+
+  "emptyPasswordError": "Please enter your password",
+  "invalidPasswordError": "Password must be at least 6 characters",
+
+  "emptyFullNameError": "Please enter your full name",
+  "invalidFullNameError": "Full name is too short",
+
+  "emptyConfirmPasswordError": "Please confirm your password",
+  "passwordMismatchError": "Passwords do not match",
+
+  "loginSuccess": "Login successful",
+  "loginFailed": "Login failed"
+}

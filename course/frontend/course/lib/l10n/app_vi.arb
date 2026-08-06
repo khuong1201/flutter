@@ -1,0 +1,28 @@
+{
+  "@@locale": "vi",
+
+  "loginTitle": "Đăng nhập",
+  "loginWelcome": "Chào mừng bạn quay trở lại với Zenith Lingua",
+  "emailLabel": "Email",
+  "passwordLabel": "Mật khẩu",
+  "loginButton": "Đăng nhập",
+
+  "homeGreeting": "Chào buổi sáng",
+  "dailyGoal": "Mục tiêu hằng ngày",
+  "roadmapTitle": "Lộ trình của bạn",
+
+  "emptyEmailError": "Vui lòng nhập email",
+  "invalidEmailError": "Email không hợp lệ",
+
+  "emptyPasswordError": "Vui lòng nhập mật khẩu",
+  "invalidPasswordError": "Mật khẩu phải có ít nhất 6 ký tự",
+
+  "emptyFullNameError": "Vui lòng nhập họ và tên",
+  "invalidFullNameError": "Họ và tên quá ngắn",
+
+  "emptyConfirmPasswordError": "Vui lòng xác nhận mật khẩu",
+  "passwordMismatchError": "Mật khẩu xác nhận không khớp",
+
+  "loginSuccess": "Đăng nhập thành công!",
+  "loginFailed": "Đăng nhập thất bại"
+}
