@@ -1,5 +1,6 @@
+import 'package:course/features/auth/data/models/user_token_model.dart';
 import 'package:dio/dio.dart';
-import '../models/user_token_model.dart';
+
 
 class AuthRepositoryImpl {
   final Dio dio;

@@ -1,12 +1,11 @@
+import 'package:course/core/local_storage/secure_storage_helper.dart';
+import 'package:course/core/network/token_interceptor.dart';
+import 'package:course/core/utils/locale_cubit.dart';
+import 'package:course/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/presentation/cubit/auth_cubit.dart';
-import '../local_storage/secure_storage_helper.dart';
-import '../network/token_interceptor.dart';
-import '../utils/locale_cubit.dart';
 
 final sl = GetIt.instance;
 

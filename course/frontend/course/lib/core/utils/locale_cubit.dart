@@ -1,7 +1,6 @@
+import 'package:course/core/local_storage/secure_storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../local_storage/secure_storage_helper.dart';
 
 class LocaleCubit extends Cubit<Locale> {
   LocaleCubit(this._storage) : super(WidgetsBinding.instance.platformDispatcher.locale) {

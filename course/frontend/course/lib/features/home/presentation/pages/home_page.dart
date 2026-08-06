@@ -1,7 +1,6 @@
+import 'package:course/core/widgets/app_button.dart';
+import 'package:course/core/widgets/lesson_card.dart';
 import 'package:flutter/material.dart';
-
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/lesson_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

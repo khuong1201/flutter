@@ -1,7 +1,6 @@
+import 'package:course/core/utils/locale_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../utils/locale_cubit.dart';
 
 class LanguagePicker extends StatelessWidget {
   const LanguagePicker({super.key});

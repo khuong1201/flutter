@@ -1,5 +1,5 @@
+import 'package:course/core/constants/app_palette.dart';
 import 'package:flutter/material.dart';
-import '../constants/app_palette.dart';
 
 class AppColorScheme {
   AppColorScheme._();

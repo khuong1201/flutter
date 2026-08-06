@@ -1,9 +1,8 @@
+import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:course/features/auth/presentation/pages/login_page.dart';
+import 'package:course/features/auth/presentation/pages/splash_page.dart';
+import 'package:course/features/home/presentation/pages/home_page.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../features/auth/presentation/cubit/auth_cubit.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
-import '../../features/auth/presentation/pages/splash_page.dart';
-import '../../features/home/presentation/pages/home_page.dart';
 import 'app_routes.dart';
 import 'go_router_refresh_stream.dart';
 

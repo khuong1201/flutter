@@ -1,11 +1,10 @@
+import 'package:course/core/utils/l10n_extension.dart';
+import 'package:course/core/validators/app_validator.dart';
+import 'package:course/core/widgets/app_button.dart';
 import 'package:course/core/widgets/language_picker.dart';
+import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../core/utils/l10n_extension.dart';
-import '../../../../core/validators/app_validator.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../cubit/auth_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

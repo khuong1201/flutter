@@ -1,6 +1,6 @@
 import 'package:course/core/local_storage/secure_storage_helper.dart';
+import 'package:course/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../data/repositories/auth_repository_impl.dart';
 
 // Các trạng thái của Auth
 abstract class AuthState {}
@@ -44,7 +44,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthError(e.toString().replaceAll('Exception: ', '')));
     }
   }
-  
+
   Future<void> checkAuthStatus() async {
     emit(AuthLoading());
 

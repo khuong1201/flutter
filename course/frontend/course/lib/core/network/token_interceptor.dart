@@ -1,5 +1,5 @@
+import 'package:course/core/local_storage/secure_storage_helper.dart';
 import 'package:dio/dio.dart';
-import '../local_storage/secure_storage_helper.dart';
 
 class TokenInterceptor extends Interceptor {
   final SecureStorageHelper secureStorage;
