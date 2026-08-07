@@ -59,4 +59,15 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthUnauthenticated());
     }
   }
+
+  Future<void> logout() async {
+    emit(AuthLoading());
+
+    try {
+      await secureStorage.deleteToken(); 
+      emit(AuthUnauthenticated());
+    } catch (e) {
+      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
+    }
+  }
 }
