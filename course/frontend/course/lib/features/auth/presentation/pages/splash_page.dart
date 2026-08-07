@@ -26,7 +26,11 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       backgroundColor: colors.primary,
       body: BlocListener<AuthCubit, AuthState>(
-        listener: (context, state) {
+        listener: (context, state) async{
+
+          await Future.delayed(const Duration(seconds: 2));
+          if (!mounted) return;
+          
           if (state is AuthAuthenticated) {
             // TODO: Navigate to HomePage.
           } else if (state is AuthUnauthenticated) {
