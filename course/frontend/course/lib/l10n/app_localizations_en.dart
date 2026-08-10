@@ -109,4 +109,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chineseLanguage => 'Chinese 🇨🇳';
+
+  @override
+  String get errorServer => 'Server error occurred';
+
+  @override
+  String get errorCache => 'Local cache error';
+
+  @override
+  String get errorNetwork => 'No network connection';
+
+  @override
+  String get errorUnknown => 'Unknown error';
+
+  @override
+  String get errorInvalidCredentials => 'Invalid email or password';
+
+  @override
+  String get errorUserExists => 'Email or username already exists';
+
+  @override
+  String get errorBadRequest => 'Invalid input data';
+
+  @override
+  String get errorUnauthorized =>
+      'You are not authorized or session has expired';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get lightTheme => 'Light';
+
+  @override
+  String get darkTheme => 'Dark';
+
+  @override
+  String get systemTheme => 'System';
+
+  @override
+  String get account => 'Account';
+
+  @override
+  String get logout => 'Logout';
 }

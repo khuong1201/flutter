@@ -109,4 +109,53 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get chineseLanguage => 'Tiếng Trung 🇨🇳';
+
+  @override
+  String get errorServer => 'Có lỗi xảy ra từ máy chủ';
+
+  @override
+  String get errorCache => 'Lỗi truy xuất dữ liệu cục bộ';
+
+  @override
+  String get errorNetwork => 'Không có kết nối mạng';
+
+  @override
+  String get errorUnknown => 'Lỗi không xác định';
+
+  @override
+  String get errorInvalidCredentials => 'Sai email hoặc mật khẩu';
+
+  @override
+  String get errorUserExists => 'Email hoặc tên đăng nhập đã tồn tại';
+
+  @override
+  String get errorBadRequest => 'Dữ liệu đầu vào không hợp lệ';
+
+  @override
+  String get errorUnauthorized =>
+      'Bạn không có quyền hoặc phiên đăng nhập đã hết hạn';
+
+  @override
+  String get settingsTitle => 'Cài đặt';
+
+  @override
+  String get language => 'Ngôn ngữ';
+
+  @override
+  String get theme => 'Giao diện';
+
+  @override
+  String get lightTheme => 'Sáng';
+
+  @override
+  String get darkTheme => 'Tối';
+
+  @override
+  String get systemTheme => 'Hệ thống';
+
+  @override
+  String get account => 'Tài khoản';
+
+  @override
+  String get logout => 'Đăng xuất';
 }

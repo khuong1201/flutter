@@ -98,9 +98,7 @@ class _LoginPageState extends State<LoginPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            state.message.isNotEmpty
-                ? state.message
-                : l10n.loginFailed,
+            context.getFailureMessage(state.failure)
           ),
           backgroundColor: theme.colorScheme.error,
           behavior: SnackBarBehavior.floating,

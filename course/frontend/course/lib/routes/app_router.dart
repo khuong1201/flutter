@@ -3,6 +3,7 @@ import 'package:course/features/auth/presentation/pages/login_page.dart';
 import 'package:course/features/auth/presentation/pages/register_page.dart';
 import 'package:course/features/auth/presentation/pages/splash_page.dart';
 import 'package:course/features/home/presentation/pages/home_page.dart';
+import 'package:course/features/settings/presentation/pages/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 import 'app_routes.dart';
@@ -61,6 +62,10 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.home,
         builder: (_, _) => const HomePage(),
+      ),
+      GoRoute(
+        path: AppRoutes.settings,
+        builder: (_, _) => const SettingsPage(),
       ),
     ],
   );

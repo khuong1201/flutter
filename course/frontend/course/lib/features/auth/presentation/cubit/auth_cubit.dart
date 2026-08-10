@@ -1,5 +1,7 @@
+import 'package:course/core/error/failures.dart';
 import 'package:course/core/local_storage/secure_storage_helper.dart';
-import 'package:course/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:course/features/auth/domain/usecases/login_usecase.dart';
+import 'package:course/features/auth/domain/usecases/register_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Các trạng thái của Auth
@@ -14,35 +16,42 @@ class AuthAuthenticated extends AuthState {
 }
 class AuthRegisterSuccess extends AuthState {}
 class AuthError extends AuthState {
-  final String message;
-  AuthError(this.message);
+  final Failure failure;
+  AuthError(this.failure);
 }
 
 class AuthCubit extends Cubit<AuthState> {
-  final AuthRepositoryImpl authRepository;
+  final LoginUseCase loginUseCase;
+  final RegisterUseCase registerUseCase;
   final SecureStorageHelper secureStorage;
   
-  AuthCubit(this.authRepository, this.secureStorage) : super(AuthInitial());
+  AuthCubit({
+    required this.loginUseCase,
+    required this.registerUseCase,
+    required this.secureStorage,
+  }) : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
-    try {
-      final userToken = await authRepository.login(email, password);
-      await secureStorage.saveToken(userToken.token);
-      emit(AuthAuthenticated(userToken.token));
-    } catch (e) {
-      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
-    }
+    final result = await loginUseCase(email, password);
+    
+    result.fold(
+      (failure) => emit(AuthError(failure)),
+      (userToken) async {
+        await secureStorage.saveToken(userToken.token);
+        emit(AuthAuthenticated(userToken.token));
+      }
+    );
   }
 
   Future<void> register(String email, String password, String fullName, String targetLanguage) async {
     emit(AuthLoading());
-    try {
-      await authRepository.register(email, password, fullName, targetLanguage);
-      emit(AuthRegisterSuccess());
-    } catch (e) {
-      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
-    }
+    final result = await registerUseCase(email, password, fullName, targetLanguage);
+    
+    result.fold(
+      (failure) => emit(AuthError(failure)),
+      (_) => emit(AuthRegisterSuccess()),
+    );
   }
 
   Future<void> checkAuthStatus() async {
@@ -67,7 +76,7 @@ class AuthCubit extends Cubit<AuthState> {
       await secureStorage.deleteToken(); 
       emit(AuthUnauthenticated());
     } catch (e) {
-      emit(AuthError(e.toString().replaceAll('Exception: ', '')));
+      emit(AuthError(UnknownFailure()));
     }
   }
 }

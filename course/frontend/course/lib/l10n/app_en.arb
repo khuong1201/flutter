@@ -45,5 +45,23 @@
   "registerFailed": "Registration failed",
 
   "japaneseLanguage": "Japanese 🇯🇵",
-  "chineseLanguage": "Chinese 🇨🇳"
+  "chineseLanguage": "Chinese 🇨🇳",
+
+  "errorServer": "Server error occurred",
+  "errorCache": "Local cache error",
+  "errorNetwork": "No network connection",
+  "errorUnknown": "Unknown error",
+  "errorInvalidCredentials": "Invalid email or password",
+  "errorUserExists": "Email or username already exists",
+  "errorBadRequest": "Invalid input data",
+  "errorUnauthorized": "You are not authorized or session has expired",
+
+  "settingsTitle": "Settings",
+  "language": "Language",
+  "theme": "Theme",
+  "lightTheme": "Light",
+  "darkTheme": "Dark",
+  "systemTheme": "System",
+  "account": "Account",
+  "logout": "Logout"
 }

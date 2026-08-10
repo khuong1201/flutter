@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'routes/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/utils/locale_cubit.dart';
+import 'core/utils/theme_cubit.dart';
 import 'features/auth/presentation/cubit/auth_cubit.dart';
 
 class ZenithLinguaApp extends StatelessWidget {
@@ -17,17 +18,21 @@ class ZenithLinguaApp extends StatelessWidget {
 
     return BlocBuilder<LocaleCubit, Locale>(
       builder: (context, locale) {
-        return MaterialApp.router(
-          title: 'Zenith Lingua',
-          debugShowCheckedModeBanner: false,
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.system,
-          locale: locale,
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates:
-              AppLocalizations.localizationsDelegates,
-          routerConfig: router,
+        return BlocBuilder<ThemeCubit, ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp.router(
+              title: 'Zenith Lingua',
+              debugShowCheckedModeBanner: false,
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: themeMode,
+              locale: locale,
+              supportedLocales: AppLocalizations.supportedLocales,
+              localizationsDelegates:
+                  AppLocalizations.localizationsDelegates,
+              routerConfig: router,
+            );
+          },
         );
       },
     );

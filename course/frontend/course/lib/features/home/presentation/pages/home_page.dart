@@ -1,6 +1,9 @@
+import 'package:course/core/utils/l10n_extension.dart';
 import 'package:course/core/widgets/app_button.dart';
 import 'package:course/core/widgets/lesson_card.dart';
+import 'package:course/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -38,13 +41,36 @@ class HomePage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),
-            child: CircleAvatar(
-              radius: 24,
-              backgroundColor: colors.primaryContainer,
-              child: Icon(
-                Icons.person,
-                color: colors.primary,
+            child: PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'settings') {
+                  context.push(AppRoutes.settings);
+                }
+              },
+              offset: const Offset(0, 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
               ),
+              child: CircleAvatar(
+                radius: 24,
+                backgroundColor: colors.primaryContainer,
+                child: Icon(
+                  Icons.person,
+                  color: colors.primary,
+                ),
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  value: 'settings',
+                  child: Row(
+                    children: [
+                      Icon(Icons.settings_outlined, color: colors.primary),
+                      const SizedBox(width: 12),
+                      Text(context.l10n.settingsTitle),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],

@@ -7,6 +7,7 @@ class SecureStorageHelper {
 
   static const String _tokenKey = 'jwt_token';
   static const String _languageKey = 'app_language';
+  static const String _themeKey = 'app_theme';
 
   Future<void> saveToken(String token) async {
     await _storage.write(key: _tokenKey, value: token);
@@ -26,5 +27,13 @@ class SecureStorageHelper {
 
   Future<String?> getLanguage() async {
     return await _storage.read(key: _languageKey);
+  }
+
+  Future<void> saveTheme(String theme) async {
+    await _storage.write(key: _themeKey, value: theme);
+  }
+
+  Future<String?> getTheme() async {
+    return await _storage.read(key: _themeKey);
   }
 }

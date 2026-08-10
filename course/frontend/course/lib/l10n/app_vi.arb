@@ -44,5 +44,23 @@
   "registerSuccess": "Đăng ký thành công! Vui lòng đăng nhập.",
   "registerFailed": "Đăng ký thất bại",
   "japaneseLanguage": "Tiếng Nhật 🇯🇵",
-  "chineseLanguage": "Tiếng Trung 🇨🇳"
+  "chineseLanguage": "Tiếng Trung 🇨🇳",
+
+  "errorServer": "Có lỗi xảy ra từ máy chủ",
+  "errorCache": "Lỗi truy xuất dữ liệu cục bộ",
+  "errorNetwork": "Không có kết nối mạng",
+  "errorUnknown": "Lỗi không xác định",
+  "errorInvalidCredentials": "Sai email hoặc mật khẩu",
+  "errorUserExists": "Email hoặc tên đăng nhập đã tồn tại",
+  "errorBadRequest": "Dữ liệu đầu vào không hợp lệ",
+  "errorUnauthorized": "Bạn không có quyền hoặc phiên đăng nhập đã hết hạn",
+
+  "settingsTitle": "Cài đặt",
+  "language": "Ngôn ngữ",
+  "theme": "Giao diện",
+  "lightTheme": "Sáng",
+  "darkTheme": "Tối",
+  "systemTheme": "Hệ thống",
+  "account": "Tài khoản",
+  "logout": "Đăng xuất"
 }

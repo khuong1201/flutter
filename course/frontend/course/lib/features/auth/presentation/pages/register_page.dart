@@ -2,8 +2,10 @@ import 'package:course/core/utils/l10n_extension.dart';
 import 'package:course/core/widgets/language_picker.dart';
 import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:course/features/auth/presentation/widgets/register_form.dart';
+import 'package:course/core/error/failures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -71,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     });
                   },
                   onRegister: _register,
-                  onBackToLogin: () => Navigator.pop(context),
+                  onBackToLogin: () => context.pop(),
                 ),
               ),
             ),
@@ -87,12 +89,16 @@ class _RegisterPageState extends State<RegisterPage> {
   ) {
     if (state is AuthRegisterSuccess) {
       _showSuccessMessage(context);
-      Navigator.pop(context);
+      Future.delayed(const Duration(milliseconds: 800), () {
+        if (context.mounted) {
+          context.go('/login');
+        }
+      });
       return;
     }
 
     if (state is AuthError) {
-      _showErrorMessage(context, state.message);
+      _showErrorMessage(context, state.failure);
     }
   }
 
@@ -112,17 +118,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void _showErrorMessage(
     BuildContext context,
-    String message,
+    Failure failure,
   ) {
     final theme = Theme.of(context);
-    final l10n = context.l10n;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          message.isNotEmpty
-              ? message
-              : l10n.registerFailed,
+          context.getFailureMessage(failure),
         ),
         backgroundColor: theme.colorScheme.error,
         behavior: SnackBarBehavior.floating,

@@ -301,6 +301,102 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Tiếng Trung 🇨🇳'**
   String get chineseLanguage;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In vi, this message translates to:
+  /// **'Có lỗi xảy ra từ máy chủ'**
+  String get errorServer;
+
+  /// No description provided for @errorCache.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi truy xuất dữ liệu cục bộ'**
+  String get errorCache;
+
+  /// No description provided for @errorNetwork.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không có kết nối mạng'**
+  String get errorNetwork;
+
+  /// No description provided for @errorUnknown.
+  ///
+  /// In vi, this message translates to:
+  /// **'Lỗi không xác định'**
+  String get errorUnknown;
+
+  /// No description provided for @errorInvalidCredentials.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sai email hoặc mật khẩu'**
+  String get errorInvalidCredentials;
+
+  /// No description provided for @errorUserExists.
+  ///
+  /// In vi, this message translates to:
+  /// **'Email hoặc tên đăng nhập đã tồn tại'**
+  String get errorUserExists;
+
+  /// No description provided for @errorBadRequest.
+  ///
+  /// In vi, this message translates to:
+  /// **'Dữ liệu đầu vào không hợp lệ'**
+  String get errorBadRequest;
+
+  /// No description provided for @errorUnauthorized.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn không có quyền hoặc phiên đăng nhập đã hết hạn'**
+  String get errorUnauthorized;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Cài đặt'**
+  String get settingsTitle;
+
+  /// No description provided for @language.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngôn ngữ'**
+  String get language;
+
+  /// No description provided for @theme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Giao diện'**
+  String get theme;
+
+  /// No description provided for @lightTheme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Sáng'**
+  String get lightTheme;
+
+  /// No description provided for @darkTheme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tối'**
+  String get darkTheme;
+
+  /// No description provided for @systemTheme.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hệ thống'**
+  String get systemTheme;
+
+  /// No description provided for @account.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tài khoản'**
+  String get account;
+
+  /// No description provided for @logout.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng xuất'**
+  String get logout;
 }
 
 class _AppLocalizationsDelegate
