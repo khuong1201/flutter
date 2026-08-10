@@ -98,6 +98,18 @@ abstract class AppLocalizations {
     Locale('vi'),
   ];
 
+  /// No description provided for @splashTagline.
+  ///
+  /// In vi, this message translates to:
+  /// **'Mở khóa thế giới của bạn'**
+  String get splashTagline;
+
+  /// No description provided for @splashLoading.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang chuẩn bị hành trang...'**
+  String get splashLoading;
+
   /// No description provided for @loginTitle.
   ///
   /// In vi, this message translates to:
@@ -127,6 +139,66 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng nhập'**
   String get loginButton;
+
+  /// No description provided for @forgotPassword.
+  ///
+  /// In vi, this message translates to:
+  /// **'Quên mật khẩu?'**
+  String get forgotPassword;
+
+  /// No description provided for @orContinueWith.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoặc tiếp tục với'**
+  String get orContinueWith;
+
+  /// No description provided for @noAccountPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chưa có tài khoản?'**
+  String get noAccountPrompt;
+
+  /// No description provided for @registerNow.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký ngay'**
+  String get registerNow;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạo tài khoản mới'**
+  String get registerTitle;
+
+  /// No description provided for @registerWelcome.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bắt đầu hành trình chinh phục ngôn ngữ'**
+  String get registerWelcome;
+
+  /// No description provided for @fullNameLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Họ và tên'**
+  String get fullNameLabel;
+
+  /// No description provided for @targetLanguageLabel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ngôn ngữ muốn học'**
+  String get targetLanguageLabel;
+
+  /// No description provided for @registerButton.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký'**
+  String get registerButton;
+
+  /// No description provided for @haveAccountPrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã có tài khoản?'**
+  String get haveAccountPrompt;
 
   /// No description provided for @homeGreeting.
   ///
@@ -205,6 +277,30 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng nhập thất bại'**
   String get loginFailed;
+
+  /// No description provided for @registerSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký thành công! Vui lòng đăng nhập.'**
+  String get registerSuccess;
+
+  /// No description provided for @registerFailed.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đăng ký thất bại'**
+  String get registerFailed;
+
+  /// No description provided for @japaneseLanguage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng Nhật 🇯🇵'**
+  String get japaneseLanguage;
+
+  /// No description provided for @chineseLanguage.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng Trung 🇨🇳'**
+  String get chineseLanguage;
 }
 
 class _AppLocalizationsDelegate

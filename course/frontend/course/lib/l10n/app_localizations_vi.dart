@@ -9,6 +9,12 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
+  String get splashTagline => 'Mở khóa thế giới của bạn';
+
+  @override
+  String get splashLoading => 'Đang chuẩn bị hành trang...';
+
+  @override
   String get loginTitle => 'Đăng nhập';
 
   @override
@@ -22,6 +28,36 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get loginButton => 'Đăng nhập';
+
+  @override
+  String get forgotPassword => 'Quên mật khẩu?';
+
+  @override
+  String get orContinueWith => 'Hoặc tiếp tục với';
+
+  @override
+  String get noAccountPrompt => 'Chưa có tài khoản?';
+
+  @override
+  String get registerNow => 'Đăng ký ngay';
+
+  @override
+  String get registerTitle => 'Tạo tài khoản mới';
+
+  @override
+  String get registerWelcome => 'Bắt đầu hành trình chinh phục ngôn ngữ';
+
+  @override
+  String get fullNameLabel => 'Họ và tên';
+
+  @override
+  String get targetLanguageLabel => 'Ngôn ngữ muốn học';
+
+  @override
+  String get registerButton => 'Đăng ký';
+
+  @override
+  String get haveAccountPrompt => 'Đã có tài khoản?';
 
   @override
   String get homeGreeting => 'Chào buổi sáng';
@@ -61,4 +97,16 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get loginFailed => 'Đăng nhập thất bại';
+
+  @override
+  String get registerSuccess => 'Đăng ký thành công! Vui lòng đăng nhập.';
+
+  @override
+  String get registerFailed => 'Đăng ký thất bại';
+
+  @override
+  String get japaneseLanguage => 'Tiếng Nhật 🇯🇵';
+
+  @override
+  String get chineseLanguage => 'Tiếng Trung 🇨🇳';
 }

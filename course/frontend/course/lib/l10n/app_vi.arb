@@ -1,11 +1,26 @@
 {
   "@@locale": "vi",
 
+  "splashTagline": "Mở khóa thế giới của bạn",
+  "splashLoading": "Đang chuẩn bị hành trang...",
+  
   "loginTitle": "Đăng nhập",
   "loginWelcome": "Chào mừng bạn quay trở lại với Zenith Lingua",
   "emailLabel": "Email",
   "passwordLabel": "Mật khẩu",
   "loginButton": "Đăng nhập",
+
+  "forgotPassword": "Quên mật khẩu?",
+  "orContinueWith": "Hoặc tiếp tục với",
+  "noAccountPrompt": "Chưa có tài khoản?",
+  "registerNow": "Đăng ký ngay",
+
+  "registerTitle": "Tạo tài khoản mới",
+  "registerWelcome": "Bắt đầu hành trình chinh phục ngôn ngữ",
+  "fullNameLabel": "Họ và tên",
+  "targetLanguageLabel": "Ngôn ngữ muốn học",
+  "registerButton": "Đăng ký",
+  "haveAccountPrompt": "Đã có tài khoản?",
 
   "homeGreeting": "Chào buổi sáng",
   "dailyGoal": "Mục tiêu hằng ngày",
@@ -24,5 +39,10 @@
   "passwordMismatchError": "Mật khẩu xác nhận không khớp",
 
   "loginSuccess": "Đăng nhập thành công!",
-  "loginFailed": "Đăng nhập thất bại"
+  "loginFailed": "Đăng nhập thất bại",
+
+  "registerSuccess": "Đăng ký thành công! Vui lòng đăng nhập.",
+  "registerFailed": "Đăng ký thất bại",
+  "japaneseLanguage": "Tiếng Nhật 🇯🇵",
+  "chineseLanguage": "Tiếng Trung 🇨🇳"
 }

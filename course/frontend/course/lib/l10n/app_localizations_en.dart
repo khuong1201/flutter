@@ -9,6 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get splashTagline => 'Unlock your world';
+
+  @override
+  String get splashLoading => 'Preparing your journey...';
+
+  @override
   String get loginTitle => 'Login';
 
   @override
@@ -22,6 +28,36 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginButton => 'Sign In';
+
+  @override
+  String get forgotPassword => 'Forgot password?';
+
+  @override
+  String get orContinueWith => 'Or continue with';
+
+  @override
+  String get noAccountPrompt => 'Don\'t have an account?';
+
+  @override
+  String get registerNow => 'Register now';
+
+  @override
+  String get registerTitle => 'Create a new account';
+
+  @override
+  String get registerWelcome => 'Start your language learning journey';
+
+  @override
+  String get fullNameLabel => 'Full name';
+
+  @override
+  String get targetLanguageLabel => 'Language you want to learn';
+
+  @override
+  String get registerButton => 'Register';
+
+  @override
+  String get haveAccountPrompt => 'Already have an account?';
 
   @override
   String get homeGreeting => 'Good morning';
@@ -61,4 +97,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginFailed => 'Login failed';
+
+  @override
+  String get registerSuccess => 'Registration successful! Please sign in.';
+
+  @override
+  String get registerFailed => 'Registration failed';
+
+  @override
+  String get japaneseLanguage => 'Japanese 🇯🇵';
+
+  @override
+  String get chineseLanguage => 'Chinese 🇨🇳';
 }

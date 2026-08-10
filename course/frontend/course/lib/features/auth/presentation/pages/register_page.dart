@@ -1,28 +1,30 @@
 import 'package:course/core/utils/l10n_extension.dart';
 import 'package:course/core/widgets/language_picker.dart';
 import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:course/features/auth/presentation/widgets/login_form.dart';
+import 'package:course/features/auth/presentation/widgets/register_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
 
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
+  String _selectedLanguage = 'ja';
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -50,20 +52,26 @@ class _LoginPageState extends State<LoginPage> {
                   horizontal: 24,
                   vertical: 16,
                 ),
-                child: LoginForm(
+                child: RegisterForm(
                   formKey: _formKey,
+                  nameController: _nameController,
                   emailController: _emailController,
                   passwordController: _passwordController,
                   isPasswordVisible: _isPasswordVisible,
+                  selectedLanguage: _selectedLanguage,
                   isLoading: state is AuthLoading,
                   onPasswordVisibilityChanged: () {
                     setState(() {
                       _isPasswordVisible = !_isPasswordVisible;
                     });
                   },
-                  onLogin: _login,
-                  onForgotPassword: _handleForgotPassword,
-                  onRegister: () => context.push('/register'),
+                  onLanguageChanged: (language) {
+                    setState(() {
+                      _selectedLanguage = language;
+                    });
+                  },
+                  onRegister: _register,
+                  onBackToLogin: () => Navigator.pop(context),
                 ),
               ),
             ),
@@ -77,53 +85,64 @@ class _LoginPageState extends State<LoginPage> {
     BuildContext context,
     AuthState state,
   ) {
-    final l10n = context.l10n;
-
-    if (state is AuthAuthenticated) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.loginSuccess),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
+    if (state is AuthRegisterSuccess) {
+      _showSuccessMessage(context);
+      Navigator.pop(context);
       return;
     }
 
     if (state is AuthError) {
-      final theme = Theme.of(context);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            state.message.isNotEmpty
-                ? state.message
-                : l10n.loginFailed,
-          ),
-          backgroundColor: theme.colorScheme.error,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      );
+      _showErrorMessage(context, state.message);
     }
   }
 
-  void _login() {
+  void _showSuccessMessage(BuildContext context) {
+    final l10n = context.l10n;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.registerSuccess),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  void _showErrorMessage(
+    BuildContext context,
+    String message,
+  ) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message.isNotEmpty
+              ? message
+              : l10n.registerFailed,
+        ),
+        backgroundColor: theme.colorScheme.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+    );
+  }
+
+  void _register() {
     if (!(_formKey.currentState?.validate() ?? false)) {
       return;
     }
 
-    context.read<AuthCubit>().login(
+    context.read<AuthCubit>().register(
           _emailController.text.trim(),
           _passwordController.text,
+          _nameController.text.trim(),
+          _selectedLanguage,
         );
-  }
-
-  void _handleForgotPassword() {
-    // TODO: Navigate to Forgot Password.
   }
 }

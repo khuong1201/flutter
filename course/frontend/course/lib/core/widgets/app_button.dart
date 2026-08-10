@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Các kiểu button được hỗ trợ trong ứng dụng.
 enum AppButtonType {
   primary,
   secondary,
@@ -9,13 +8,6 @@ enum AppButtonType {
 }
 
 class AppButton extends StatelessWidget {
-  final String label;
-  final VoidCallback? onPressed;
-  final AppButtonType type;
-  final bool isLoading;
-  final bool isFullWidth;
-  final Widget? icon;
-
   const AppButton({
     super.key,
     required this.label,
@@ -26,44 +18,32 @@ class AppButton extends StatelessWidget {
     this.icon,
   });
 
+  final String label;
+  final VoidCallback? onPressed;
+  final AppButtonType type;
+  final bool isLoading;
+  final bool isFullWidth;
+  final Widget? icon;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    Color backgroundColor;
-    Color foregroundColor;
-    BorderSide? borderSide;
-
-    switch (type) {
-      case AppButtonType.primary:
-        backgroundColor = colorScheme.primary;
-        foregroundColor = colorScheme.onPrimary;
-        break;
-
-      case AppButtonType.secondary:
-        backgroundColor = colorScheme.secondary;
-        foregroundColor = colorScheme.onSecondary;
-        break;
-
-      case AppButtonType.outlined:
-        backgroundColor = Colors.transparent;
-        foregroundColor = colorScheme.primary;
-        borderSide = BorderSide(
-          color: colorScheme.primary,
-          width: 1.5,
-        );
-        break;
-
-      case AppButtonType.inverted:
-        backgroundColor = colorScheme.surface;
-        foregroundColor = colorScheme.primary;
-        break;
-    }
+    final (
+      backgroundColor,
+      foregroundColor,
+      borderSide,
+    ) = _resolveColors(colorScheme);
 
     final buttonStyle = ElevatedButton.styleFrom(
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
+      disabledBackgroundColor: backgroundColor.withValues(
+        alpha: 0.5,
+      ),
+      disabledForegroundColor: foregroundColor.withValues(
+        alpha: 0.7,
+      ),
       elevation: 0,
       side: borderSide,
       padding: const EdgeInsets.symmetric(
@@ -73,38 +53,16 @@ class AppButton extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
       ),
-      disabledBackgroundColor: backgroundColor.withValues(alpha: 0.5),
     );
 
-    final textStyle = theme.textTheme.labelLarge;
-
-    Widget child;
-
-    if (isLoading) {
-      child = SizedBox(
-        width: 24,
-        height: 24,
-        child: CircularProgressIndicator(
-          strokeWidth: 2.5,
-          color: foregroundColor,
-        ),
-      );
-    } else if (icon != null) {
-      child = Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon!,
-          const SizedBox(width: 8),
-          Text(label, style: textStyle),
-        ],
-      );
-    } else {
-      child = Text(label, style: textStyle);
-    }
+    final child = _buildChild(
+      foregroundColor: foregroundColor,
+    );
 
     final button = ElevatedButton(
-      onPressed: (isLoading || onPressed == null) ? null : onPressed,
+      onPressed: isLoading || onPressed == null
+          ? null
+          : onPressed,
       style: buttonStyle,
       child: child,
     );
@@ -116,6 +74,82 @@ class AppButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: button,
+    );
+  }
+
+  (
+    Color,
+    Color,
+    BorderSide?,
+  ) _resolveColors(ColorScheme colorScheme) {
+    switch (type) {
+      case AppButtonType.primary:
+        return (
+          colorScheme.primary,
+          colorScheme.onPrimary,
+          null,
+        );
+
+      case AppButtonType.secondary:
+        return (
+          colorScheme.secondary,
+          colorScheme.onSecondary,
+          null,
+        );
+
+      case AppButtonType.outlined:
+        return (
+          Colors.transparent,
+          colorScheme.primary,
+          BorderSide(
+            color: colorScheme.primary,
+            width: 1.5,
+          ),
+        );
+
+      case AppButtonType.inverted:
+        return (
+          colorScheme.surface,
+          colorScheme.primary,
+          null,
+        );
+    }
+  }
+
+  Widget _buildChild({
+    required Color foregroundColor,
+  }) {
+    if (isLoading) {
+      return SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          strokeWidth: 2.5,
+          color: foregroundColor,
+        ),
+      );
+    }
+
+    final labelWidget = Text(
+      label,
+      style: TextStyle(
+        color: foregroundColor,
+        fontWeight: FontWeight.w600,
+      ),
+    );
+
+    if (icon == null) {
+      return labelWidget;
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        icon!,
+        const SizedBox(width: 8),
+        labelWidget,
+      ],
     );
   }
 }

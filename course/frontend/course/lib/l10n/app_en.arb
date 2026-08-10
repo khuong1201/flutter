@@ -1,11 +1,26 @@
 {
   "@@locale": "en",
 
+  "splashTagline": "Unlock your world",
+  "splashLoading": "Preparing your journey...",
+  
   "loginTitle": "Login",
   "loginWelcome": "Welcome back to Zenith Lingua",
   "emailLabel": "Email",
   "passwordLabel": "Password",
   "loginButton": "Sign In",
+
+  "forgotPassword": "Forgot password?",
+  "orContinueWith": "Or continue with",
+  "noAccountPrompt": "Don't have an account?",
+  "registerNow": "Register now",
+
+  "registerTitle": "Create a new account",
+  "registerWelcome": "Start your language learning journey",
+  "fullNameLabel": "Full name",
+  "targetLanguageLabel": "Language you want to learn",
+  "registerButton": "Register",
+  "haveAccountPrompt": "Already have an account?",
 
   "homeGreeting": "Good morning",
   "dailyGoal": "Daily Goal",
@@ -24,5 +39,11 @@
   "passwordMismatchError": "Passwords do not match",
 
   "loginSuccess": "Login successful",
-  "loginFailed": "Login failed"
+  "loginFailed": "Login failed",
+
+  "registerSuccess": "Registration successful! Please sign in.",
+  "registerFailed": "Registration failed",
+
+  "japaneseLanguage": "Japanese 🇯🇵",
+  "chineseLanguage": "Chinese 🇨🇳"
 }
