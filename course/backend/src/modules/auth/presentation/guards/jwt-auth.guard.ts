@@ -1,6 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { AppException } from '../../../../common/exceptions/app.exception';
+import { ApiCode } from '../../../../common/constants/api-code.constant';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -11,7 +13,7 @@ export class JwtAuthGuard implements CanActivate {
     const token = this.extractTokenFromHeader(request);
     
     if (!token) {
-      throw new UnauthorizedException('Token not found');
+      throw new AppException(ApiCode.UNAUTHORIZED, 'Token not found', 401);
     }
     
     try {
@@ -20,7 +22,7 @@ export class JwtAuthGuard implements CanActivate {
       // so that we can access it in our route handlers
       request['user'] = { id: payload.sub, email: payload.email };
     } catch {
-      throw new UnauthorizedException('Invalid token');
+      throw new AppException(ApiCode.TOKEN_INVALID, 'Invalid token', 401);
     }
     return true;
   }

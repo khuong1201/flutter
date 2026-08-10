@@ -6,12 +6,17 @@ import { User } from '../../../users/domain/entities/user.entity';
 import { randomUUID } from 'crypto';
 
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class SocialLoginDto {
   @ApiProperty({ example: 'google', description: 'Social provider (google, apple)' })
+  @IsString()
+  @IsNotEmpty()
   provider: string;
 
   @ApiProperty({ example: 'eyJhbGciOiJSUzI1...', description: 'ID Token from provider' })
+  @IsString()
+  @IsNotEmpty()
   idToken: string;
 }
 

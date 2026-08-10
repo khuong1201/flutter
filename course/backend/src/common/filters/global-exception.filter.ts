@@ -7,6 +7,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { AppException } from '../exceptions/app.exception';
+import { ApiCode } from '../constants/api-code.constant';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -19,9 +21,32 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message: unknown = 'Internal server error';
+    let code: string = ApiCode.INTERNAL_ERROR;
 
-    if (exception instanceof HttpException) {
+    if (exception instanceof AppException) {
       status = exception.getStatus();
+      message = exception.message;
+      code = exception.code;
+    } else if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      
+      switch (status) {
+        case HttpStatus.BAD_REQUEST:
+          code = ApiCode.BAD_REQUEST;
+          break;
+        case HttpStatus.UNAUTHORIZED:
+          code = ApiCode.UNAUTHORIZED;
+          break;
+        case HttpStatus.FORBIDDEN:
+          code = ApiCode.FORBIDDEN;
+          break;
+        case HttpStatus.NOT_FOUND:
+          code = ApiCode.NOT_FOUND;
+          break;
+        default:
+          code = ApiCode.INTERNAL_ERROR;
+      }
+
       const exceptionResponse = exception.getResponse();
       if (typeof exceptionResponse === 'string') {
         message = exceptionResponse;
@@ -41,10 +66,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     );
 
     response.status(status).json({
+      code,
+      message,
+      data: null,
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      message,
     });
   }
 }
