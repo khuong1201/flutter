@@ -1,4 +1,8 @@
-import { Character as PrismaCharacter, Radical as PrismaRadical, Vocabulary as PrismaVocabulary } from '@prisma/client';
+import {
+  Character as PrismaCharacter,
+  Radical as PrismaRadical,
+  Vocabulary as PrismaVocabulary,
+} from '@prisma/client';
 import { Character, StrokeData } from '../../domain/entities/character.entity';
 import { Radical } from '../../domain/entities/radical.entity';
 import { Vocabulary } from '../../domain/entities/vocabulary.entity';

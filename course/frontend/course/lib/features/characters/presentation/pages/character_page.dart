@@ -1,0 +1,253 @@
+import 'package:course/features/characters/domain/entities/character_entity.dart';
+import 'package:course/features/characters/presentation/cubit/character_cubit.dart';
+import 'package:course/features/characters/presentation/widgets/stroke_animation_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+
+class CharacterPage extends StatelessWidget {
+  final int characterId;
+
+  const CharacterPage({
+    super.key,
+    required this.characterId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => GetIt.I<CharacterCubit>()..loadCharacter(characterId),
+      child: const _CharacterPageView(),
+    );
+  }
+}
+
+class _CharacterPageView extends StatelessWidget {
+  const _CharacterPageView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final text = theme.textTheme;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Chi tiết chữ Hán'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: BlocBuilder<CharacterCubit, CharacterState>(
+        builder: (context, state) {
+          if (state is CharacterLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          
+          if (state is CharacterError) {
+            return Center(
+              child: Text(
+                'Đã xảy ra lỗi: ${state.failure.messageKey}',
+                style: text.bodyLarge?.copyWith(color: colors.error),
+              ),
+            );
+          }
+
+          if (state is CharacterLoaded) {
+            final char = state.character;
+            
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Row: Ý nghĩa + Icon Âm thanh
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          char.meaning.isNotEmpty ? char.meaning : 'Đang cập nhật ý nghĩa...',
+                          style: text.headlineMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: colors.onSurface,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.volume_up_rounded, size: 32),
+                        color: colors.primary,
+                        onPressed: () {
+                          // TODO: Xử lý phát âm thanh audioKey
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Tính năng phát âm thanh đang được hoàn thiện')),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+                  
+                  // Animation Widget (Ô chữ)
+                  Center(
+                    child: StrokeAnimationWidget(
+                      strokeData: char.strokeData,
+                      size: MediaQuery.sizeOf(context).width - 32, // To ra nữa
+                      strokeColor: colors.primary,
+                      outlineColor: colors.onSurfaceVariant,
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 32),
+                  
+                  // Phát âm
+                  if (char.pronunciation != null) _buildPronunciation(context, char.pronunciation!),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Bộ thủ
+                  if (char.radicals.isNotEmpty) _buildRadicals(context, char.radicals),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Từ vựng ví dụ
+                  if (char.vocabularies.isNotEmpty) _buildVocabularies(context, char.vocabularies),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );
+  }
+
+  Widget _buildPronunciation(BuildContext context, PronunciationEntity pronunciation) {
+    final colors = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainer,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Phát âm',
+            style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          if (pronunciation.on.isNotEmpty)
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colors.primaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text('Onyomi', style: text.labelSmall?.copyWith(color: colors.onPrimaryContainer)),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(pronunciation.on.join(', '))),
+              ],
+            ),
+          if (pronunciation.on.isNotEmpty && pronunciation.kun.isNotEmpty)
+            const SizedBox(height: 8),
+          if (pronunciation.kun.isNotEmpty)
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: colors.secondaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text('Kunyomi', style: text.labelSmall?.copyWith(color: colors.onSecondaryContainer)),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(pronunciation.kun.join(', '))),
+              ],
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadicals(BuildContext context, List<RadicalEntity> radicals) {
+    final colors = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Bộ thủ',
+          style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: radicals.map((r) {
+            return Chip(
+              label: Text('${r.radicalText} - ${r.meaning}'),
+              backgroundColor: colors.surfaceContainerHigh,
+              side: BorderSide.none,
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildVocabularies(BuildContext context, List<VocabularyEntity> vocabularies) {
+    final colors = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Từ vựng ví dụ',
+          style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 12),
+        ...vocabularies.map((v) => Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              border: Border.all(color: colors.outlineVariant),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  v.word,
+                  style: text.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colors.primary,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(v.pronunciation, style: text.bodySmall?.copyWith(color: colors.onSurfaceVariant)),
+                      Text(v.meaning, style: text.bodyMedium),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )),
+      ],
+    );
+  }
+}

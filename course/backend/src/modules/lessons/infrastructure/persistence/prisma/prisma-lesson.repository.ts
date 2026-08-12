@@ -24,14 +24,16 @@ export class PrismaLessonRepository implements ILessonRepository {
     return lessons.map(LessonMapper.toLessonDomain);
   }
 
-  async findUserLessons(userId: string): Promise<{ lessonId: number; status: string; completedAt: Date | null; }[]> {
+  async findUserLessons(
+    userId: string,
+  ): Promise<{ lessonId: number; status: string; completedAt: Date | null }[]> {
     return this.prisma.userLesson.findMany({
       where: { userId },
       select: {
         lessonId: true,
         status: true,
         completedAt: true,
-      }
+      },
     });
   }
 
@@ -43,6 +45,27 @@ export class PrismaLessonRepository implements ILessonRepository {
       },
       orderBy: { orderIndex: 'asc' },
     });
-    return records.map(r => r.character);
+    return records.map((r) => r.character);
+  }
+
+  async completeUserLesson(userId: string, lessonId: number): Promise<void> {
+    await this.prisma.userLesson.upsert({
+      where: {
+        userId_lessonId: {
+          userId,
+          lessonId,
+        },
+      },
+      update: {
+        status: 'completed',
+        completedAt: new Date(),
+      },
+      create: {
+        userId,
+        lessonId,
+        status: 'completed',
+        completedAt: new Date(),
+      },
+    });
   }
 }

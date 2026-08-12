@@ -21,6 +21,10 @@ import { PROGRESS_REPOSITORY } from './domain/repositories/progress.repository.i
       useClass: PrismaProgressRepository,
     },
   ],
-  exports: [GetDueReviewsUseCase, GetProgressStatsUseCase, UpdateProgressUseCase],
+  exports: [
+    GetDueReviewsUseCase,
+    GetProgressStatsUseCase,
+    UpdateProgressUseCase,
+  ],
 })
 export class ProgressModule {}

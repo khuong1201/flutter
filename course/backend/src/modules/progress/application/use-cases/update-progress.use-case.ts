@@ -12,9 +12,16 @@ export class UpdateProgressUseCase {
     private readonly progressRepository: IProgressRepository,
   ) {}
 
-  async execute(userId: string, characterId: number, grade: number): Promise<UserProgress> {
-    let progress = await this.progressRepository.findByUserAndCharacter(userId, characterId);
-    
+  async execute(
+    userId: string,
+    characterId: number,
+    grade: number,
+  ): Promise<UserProgress> {
+    let progress = await this.progressRepository.findByUserAndCharacter(
+      userId,
+      characterId,
+    );
+
     if (!progress) {
       // Create new progress record
       progress = new UserProgress(
@@ -22,11 +29,11 @@ export class UpdateProgressUseCase {
         userId,
         characterId,
         'learning',
-        2.50, // default ease factor
-        0,    // interval days
+        2.5, // default ease factor
+        0, // interval days
         new Date(), // next review at
-        0,    // total reviews
-        0     // consecutive correct
+        0, // total reviews
+        0, // consecutive correct
       );
     }
 

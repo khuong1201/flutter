@@ -13,6 +13,7 @@ import { LessonsModule } from './modules/lessons/lessons.module';
 import { ProgressModule } from './modules/progress/progress.module';
 import { PracticeModule } from './modules/practice/practice.module';
 import { LevelsModule } from './modules/levels/levels.module';
+import { ContributionsModule } from './modules/contributions/contributions.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { LevelsModule } from './modules/levels/levels.module';
     ProgressModule,
     PracticeModule,
     LevelsModule,
+    ContributionsModule,
   ],
   controllers: [],
   providers: [],

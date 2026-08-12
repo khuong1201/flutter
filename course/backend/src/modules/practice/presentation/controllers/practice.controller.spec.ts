@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PracticeController } from './practice.controller';
-import { SubmitReviewResultUseCase, SubmitReviewDto } from '../../application/use-cases/submit-review-result.use-case';
+import {
+  SubmitReviewResultUseCase,
+  SubmitReviewDto,
+} from '../../application/use-cases/submit-review-result.use-case';
 import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 
 import { GenerateQuizUseCase } from '../../application/use-cases/generate-quiz.use-case';
@@ -28,7 +31,7 @@ describe('PracticeController', () => {
         {
           provide: GenerateQuizUseCase,
           useValue: mockGenerateQuizUseCase,
-        }
+        },
       ],
     })
       .overrideGuard(JwtAuthGuard)
@@ -36,7 +39,9 @@ describe('PracticeController', () => {
       .compile();
 
     controller = module.get<PracticeController>(PracticeController);
-    submitReviewUseCase = module.get<SubmitReviewResultUseCase>(SubmitReviewResultUseCase);
+    submitReviewUseCase = module.get<SubmitReviewResultUseCase>(
+      SubmitReviewResultUseCase,
+    );
   });
 
   it('should call submit review use case on POST /practice/review', async () => {
@@ -48,6 +53,9 @@ describe('PracticeController', () => {
     const result = await controller.submitReview(req, dto);
 
     expect(result).toEqual({ success: true });
-    expect(mockSubmitReviewUseCase.execute).toHaveBeenCalledWith('uuid-123', dto);
+    expect(mockSubmitReviewUseCase.execute).toHaveBeenCalledWith(
+      'uuid-123',
+      dto,
+    );
   });
 });

@@ -9,12 +9,18 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class SocialLoginDto {
-  @ApiProperty({ example: 'google', description: 'Social provider (google, apple)' })
+  @ApiProperty({
+    example: 'google',
+    description: 'Social provider (google, apple)',
+  })
   @IsString()
   @IsNotEmpty()
   provider: string;
 
-  @ApiProperty({ example: 'eyJhbGciOiJSUzI1...', description: 'ID Token from provider' })
+  @ApiProperty({
+    example: 'eyJhbGciOiJSUzI1...',
+    description: 'ID Token from provider',
+  })
   @IsString()
   @IsNotEmpty()
   idToken: string;
@@ -40,7 +46,7 @@ export class SocialLoginUseCase {
       // Mock logic: decode JWT or call Google API
       email = `google_${data.idToken}@example.com`; // mock payload extraction
       fullName = 'Google User';
-      providerId = data.idToken; 
+      providerId = data.idToken;
     } else if (data.provider === 'apple') {
       email = `apple_${data.idToken}@example.com`;
       fullName = 'Apple User';
@@ -63,7 +69,7 @@ export class SocialLoginUseCase {
         null,
         null,
         data.provider,
-        providerId
+        providerId,
       );
       await this.userRepository.create(user);
     }

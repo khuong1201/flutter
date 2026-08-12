@@ -1,8 +1,11 @@
 import 'package:course/core/utils/l10n_extension.dart';
-import 'package:course/core/widgets/app_button.dart';
 import 'package:course/core/widgets/lesson_card.dart';
+import 'package:course/features/home/presentation/cubit/home_cubit.dart';
+import 'package:course/features/home/presentation/widgets/contribution_graph.dart';
 import 'package:course/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
@@ -75,85 +78,88 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: colors.primary,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Mục tiêu hằng ngày',
-                          style: text.bodyLarge?.copyWith(
-                            color: colors.onPrimary,
-                            fontWeight: FontWeight.w600,
-                          ),
+      body: BlocProvider(
+        create: (context) => GetIt.I<HomeCubit>()..loadData(),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder<HomeCubit, HomeState>(
+                builder: (context, state) {
+                  if (state is HomeLoading) {
+                    return const SizedBox(
+                      height: 160,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  
+                  if (state is HomeLoaded) {
+                    final contributionsMap = <DateTime, int>{};
+                    for (var item in state.contributions) {
+                      contributionsMap[item.date] = item.count;
+                    }
+                    
+                    return ContributionGraph(
+                      contributions: contributionsMap,
+                    );
+                  }
+                  
+                  if (state is HomeError) {
+                    return SizedBox(
+                      height: 160,
+                      child: Center(
+                        child: Text(
+                          'Không thể tải biểu đồ đóng góp',
+                          style: text.bodyMedium?.copyWith(color: colors.error),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Tiếp tục giữ chuỗi học tập nhé!',
-                          style: text.bodyMedium?.copyWith(
-                            color: colors.onPrimary.withValues(alpha: 0.8),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.local_fire_department_rounded,
-                    size: 48,
-                    color: colors.onPrimary,
-                  ),
-                ],
+                      ),
+                    );
+                  }
+
+                  // Initial or empty state
+                  return const ContributionGraph(
+                    contributions: {},
+                  );
+                },
               ),
-            ),
-            const SizedBox(height: 32),
-            Text(
-              'Lộ trình của bạn',
-              style: text.headlineLarge?.copyWith(
-                fontSize: 20,
+              const SizedBox(height: 24),
+              LessonCard(
+                title: context.l10n.japaneseJLPT,
+                languageChar: '日',
+                onTap: () {
+                  // Navigate to a random character ID for demonstration (16278 to 32554)
+                  final randomId = 16278 + (DateTime.now().millisecondsSinceEpoch % (32554 - 16278 + 1));
+                  context.push(AppRoutes.character.replaceAll(':id', randomId.toString()));
+                },
               ),
-            ),
-            const SizedBox(height: 16),
-            LessonCard(
-              title: 'Basic Expressions',
-              subtitle: 'Learn greetings and essentials',
-              progress: 1,
-              onTap: () {},
-            ),
-            const SizedBox(height: 16),
-            LessonCard(
-              title: 'Japanese (JLPT)',
-              subtitle: 'N5 Vocabulary & Kanji',
-              progress: 0.45,
-              onTap: () {},
-            ),
-            const SizedBox(height: 16),
-            LessonCard(
-              title: 'Chinese (HSK)',
-              subtitle: 'HSK 1 Fundamentals',
-              progress: 0,
-              onTap: () {},
-            ),
-            const SizedBox(height: 32),
-            AppButton(
-              label: 'Kiểm tra trình độ',
-              type: AppButtonType.secondary,
-              onPressed: () {},
-            ),
-            const SizedBox(height: 40),
-          ],
+              const SizedBox(height: 16),
+              LessonCard(
+                title: context.l10n.chineseHSK,
+                languageChar: '中',
+                onTap: () {
+                  final randomId = 16278 + (DateTime.now().millisecondsSinceEpoch % (32554 - 16278 + 1));
+                  context.push(AppRoutes.character.replaceAll(':id', randomId.toString()));
+                },
+              ),
+              const SizedBox(height: 32),
+              Center(
+                child: Text(
+                  context.l10n.homeSlogan,
+                  style: text.bodyLarge?.copyWith(
+                    fontStyle: FontStyle.italic,
+                    color: colors.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              const SizedBox(height: 40),
+            ],
+          ),
         ),
       ),
     );

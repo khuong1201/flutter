@@ -9,6 +9,12 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get appTitle => 'Zenith Lingua';
+
+  @override
+  String get homeSlogan => '\"Learn a new language, open a new horizon\"';
+
+  @override
   String get splashTagline => 'Unlock your world';
 
   @override
@@ -67,6 +73,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get roadmapTitle => 'Your Roadmap';
+
+  @override
+  String get learningActivity => 'Learning Activity';
+
+  @override
+  String lessonsCount(int count) {
+    return '$count lessons';
+  }
+
+  @override
+  String get japaneseJLPT => 'Japanese (JLPT)';
+
+  @override
+  String get japaneseJLPTDesc => 'N5 Vocabulary & Kanji';
+
+  @override
+  String get chineseHSK => 'Chinese (HSK)';
+
+  @override
+  String get chineseHSKDesc => 'HSK 1 Fundamentals';
+
+  @override
+  String get less => 'Less';
+
+  @override
+  String get more => 'More';
 
   @override
   String get emptyEmailError => 'Please enter your email';

@@ -16,7 +16,9 @@ export class Sm2Service {
       } else if (progress.consecutiveCorrect === 1) {
         progress.intervalDays = 6;
       } else {
-        progress.intervalDays = Math.round(progress.intervalDays * progress.easeFactor);
+        progress.intervalDays = Math.round(
+          progress.intervalDays * progress.easeFactor,
+        );
       }
       progress.consecutiveCorrect += 1;
     } else {
@@ -25,14 +27,15 @@ export class Sm2Service {
     }
 
     // Update Ease Factor (EF)
-    progress.easeFactor = progress.easeFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
+    progress.easeFactor =
+      progress.easeFactor + (0.1 - (5 - grade) * (0.08 + (5 - grade) * 0.02));
     if (progress.easeFactor < 1.3) {
       progress.easeFactor = 1.3;
     }
 
     progress.totalReviews += 1;
     progress.status = 'reviewing';
-    
+
     const nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + progress.intervalDays);
     progress.nextReviewAt = nextDate;

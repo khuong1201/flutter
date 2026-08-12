@@ -9,14 +9,17 @@ export class TtsAudioProvider implements IAudioProvider {
 
   async generateAudio(text: string, language: string): Promise<Buffer> {
     this.logger.log(`Generating audio for [${language}] ${text}`);
-    
+
     let url = '';
     if (language === 'zh') {
       url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=zh-CN&client=tw-ob`;
     } else if (language === 'ja') {
       url = `https://assets.languagepod101.com/dictionary/japanese/audiomp3.php?kanji=${encodeURIComponent(text)}`;
     } else {
-      throw new HttpException(`Language ${language} not supported for TTS`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Language ${language} not supported for TTS`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     return this.downloadBuffer(url);
@@ -26,13 +29,22 @@ export class TtsAudioProvider implements IAudioProvider {
     return new Promise((resolve, reject) => {
       const get = url.startsWith('https') ? https.get : http.get;
       const req = get(url, (res) => {
-        if (res.statusCode && res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        if (
+          res.statusCode &&
+          res.statusCode >= 300 &&
+          res.statusCode < 400 &&
+          res.headers.location
+        ) {
           // Follow redirect
-          return this.downloadBuffer(res.headers.location).then(resolve).catch(reject);
+          return this.downloadBuffer(res.headers.location)
+            .then(resolve)
+            .catch(reject);
         }
 
         if (res.statusCode !== 200) {
-          return reject(new Error(`Failed to download audio. Status: ${res.statusCode}`));
+          return reject(
+            new Error(`Failed to download audio. Status: ${res.statusCode}`),
+          );
         }
 
         const chunks: Buffer[] = [];

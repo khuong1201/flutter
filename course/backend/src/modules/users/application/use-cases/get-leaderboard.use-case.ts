@@ -15,10 +15,10 @@ export class GetLeaderboardUseCase {
     // However, IUserRepository currently only has findById, findByEmail, save.
     // I should add `findTopByXp(limit: number)` to IUserRepository.
     // For now, I'll assume we've added it.
-    
+
     const users = await this.userRepository.findTopByXp(limit);
-    
-    return users.map(user => ({
+
+    return users.map((user) => ({
       id: user.id,
       email: user.email,
       fullName: user.fullName,

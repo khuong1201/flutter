@@ -17,8 +17,8 @@ describe('CharacterMapper', () => {
             radicalText: '日',
             meaning: 'sun',
             variants: null,
-          }
-        }
+          },
+        },
       ],
       vocabularies: [
         {
@@ -27,8 +27,8 @@ describe('CharacterMapper', () => {
           word: '日本',
           meaning: 'Japan',
           pronunciation: 'Nihon',
-        }
-      ]
+        },
+      ],
     };
 
     const domainEntity = CharacterMapper.toDomain(prismaCharacter);

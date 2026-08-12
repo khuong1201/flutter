@@ -1,4 +1,5 @@
 import 'package:course/core/local_storage/secure_storage_helper.dart';
+import 'package:course/core/network/dio_exception_extension.dart';
 import 'package:dio/dio.dart';
 
 class TokenInterceptor extends Interceptor {
@@ -27,12 +28,9 @@ class TokenInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == 401) {
-      final data = err.response?.data;
-      if (data != null && data is Map<String, dynamic>) {
-        final code = data['code'];
-        if (code == 'TOKEN_EXPIRED' || code == 'TOKEN_INVALID') {
-          onUnauthorized();
-        }
+      final code = err.apiCode;
+      if (code == 'TOKEN_EXPIRED' || code == 'TOKEN_INVALID' || code == 'UNAUTHORIZED') {
+        onUnauthorized();
       }
     }
 

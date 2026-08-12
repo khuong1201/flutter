@@ -1,5 +1,16 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 import { GetAllLevelsUseCase } from '../../application/use-cases/get-all-levels.use-case';
 import { GetLevelLessonsUseCase } from '../../application/use-cases/get-level-lessons.use-case';
@@ -7,7 +18,7 @@ import { GetLevelLessonsUseCase } from '../../application/use-cases/get-level-le
 @ApiTags('Levels')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('api/v1/levels')
+@Controller('levels')
 export class LevelsController {
   constructor(
     private readonly getAllLevelsUseCase: GetAllLevelsUseCase,

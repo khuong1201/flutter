@@ -1,4 +1,5 @@
 import 'package:course/core/local_storage/secure_storage_helper.dart';
+import 'package:course/core/network/api_response_interceptor.dart';
 import 'package:course/core/network/token_interceptor.dart';
 import 'package:course/core/utils/locale_cubit.dart';
 import 'package:course/core/utils/theme_cubit.dart';
@@ -7,6 +8,15 @@ import 'package:course/features/auth/domain/repositories/auth_repository.dart';
 import 'package:course/features/auth/domain/usecases/login_usecase.dart';
 import 'package:course/features/auth/domain/usecases/register_usecase.dart';
 import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:course/features/characters/data/datasources/character_remote_datasource.dart';
+import 'package:course/features/characters/data/repositories/character_repository_impl.dart';
+import 'package:course/features/characters/domain/repositories/character_repository.dart';
+import 'package:course/features/characters/domain/usecases/get_character_usecase.dart';
+import 'package:course/features/characters/presentation/cubit/character_cubit.dart';
+import 'package:course/features/home/data/repositories/home_repository_impl.dart';
+import 'package:course/features/home/domain/repositories/home_repository.dart';
+import 'package:course/features/home/domain/usecases/get_contributions_usecase.dart';
+import 'package:course/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -44,9 +54,14 @@ Future<void> configureDependencies() async {
       },
     ));
 
+    dio.interceptors.add(ApiResponseInterceptor());
+
     dio.interceptors.add(
       LogInterceptor(
+        request: true,
+        requestHeader: true,
         requestBody: true,
+        responseHeader: true,
         responseBody: true,
       ),
     );
@@ -59,6 +74,18 @@ Future<void> configureDependencies() async {
     () => AuthRepositoryImpl(sl()),
   );
 
+  sl.registerLazySingleton<HomeRepository>(
+    () => HomeRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton<CharacterRemoteDataSource>(
+    () => CharacterRemoteDataSourceImpl(dio: sl()),
+  );
+
+  sl.registerLazySingleton<CharacterRepository>(
+    () => CharacterRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // UseCases
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl()),
@@ -68,12 +95,32 @@ Future<void> configureDependencies() async {
     () => RegisterUseCase(sl()),
   );
 
+  sl.registerLazySingleton<GetContributionsUseCase>(
+    () => GetContributionsUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetCharacterUseCase>(
+    () => GetCharacterUseCase(sl()),
+  );
+
   // Global Cubits
   sl.registerLazySingleton<AuthCubit>(
     () => AuthCubit(
       loginUseCase: sl(),
       registerUseCase: sl(),
       secureStorage: sl(),
+    ),
+  );
+
+  sl.registerFactory<HomeCubit>(
+    () => HomeCubit(
+      getContributionsUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory<CharacterCubit>(
+    () => CharacterCubit(
+      getCharacterUseCase: sl(),
     ),
   );
 

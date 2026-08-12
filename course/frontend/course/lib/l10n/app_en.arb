@@ -1,6 +1,8 @@
 {
   "@@locale": "en",
 
+  "appTitle": "Zenith Lingua",
+  "homeSlogan": "\"Learn a new language, open a new horizon\"",
   "splashTagline": "Unlock your world",
   "splashLoading": "Preparing your journey...",
   
@@ -25,6 +27,21 @@
   "homeGreeting": "Good morning",
   "dailyGoal": "Daily Goal",
   "roadmapTitle": "Your Roadmap",
+  "learningActivity": "Learning Activity",
+  "lessonsCount": "{count} lessons",
+  "@lessonsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "japaneseJLPT": "Japanese (JLPT)",
+  "japaneseJLPTDesc": "N5 Vocabulary & Kanji",
+  "chineseHSK": "Chinese (HSK)",
+  "chineseHSKDesc": "HSK 1 Fundamentals",
+  "less": "Less",
+  "more": "More",
 
   "emptyEmailError": "Please enter your email",
   "invalidEmailError": "Please enter a valid email address",

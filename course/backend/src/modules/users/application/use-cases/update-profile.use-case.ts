@@ -26,9 +26,12 @@ export class UpdateProfileUseCase {
     private readonly userRepository: IUserRepository,
   ) {}
 
-  async execute(userId: string, data: UpdateProfileDto): Promise<UserResponseDto> {
+  async execute(
+    userId: string,
+    data: UpdateProfileDto,
+  ): Promise<UserResponseDto> {
     const user = await this.userRepository.findById(userId);
-    
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -36,7 +39,8 @@ export class UpdateProfileUseCase {
     if (data.avatarUrl !== undefined) user.avatarUrl = data.avatarUrl;
     if (data.targetLevel !== undefined) user.targetLevel = data.targetLevel;
     if (data.fullName !== undefined) (user as any).fullName = data.fullName; // fullName is readonly in entity but we can update it in DB
-    if (data.targetLanguage !== undefined) (user as any).targetLanguage = data.targetLanguage;
+    if (data.targetLanguage !== undefined)
+      (user as any).targetLanguage = data.targetLanguage;
 
     await this.userRepository.update(user.id, {
       avatarUrl: user.avatarUrl,

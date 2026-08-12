@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 class LessonCard extends StatelessWidget {
   final String title;
-  final String subtitle;
-  final double progress;
+  final String? subtitle;
+  final String languageChar;
   final VoidCallback onTap;
 
   const LessonCard({
     super.key,
     required this.title,
-    required this.subtitle,
-    this.progress = 0,
+    this.subtitle,
+    required this.languageChar,
     required this.onTap,
   });
 
@@ -45,68 +45,51 @@ class LessonCard extends StatelessWidget {
                 )
               : null,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Row(
+            Positioned(
+              right: -10,
+              bottom: 10,
+              child: Text(
+                languageChar,
+                style: text.displayLarge?.copyWith(
+                  fontSize: 80,
+                  color: colors.primary.withValues(alpha: 0.1),
+                  height: 1,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: text.headlineLarge?.copyWith(
-                          fontSize: 20,
-                          color: colors.onSurface,
-                        ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: text.headlineLarge?.copyWith(
+                              fontSize: 20,
+                              color: colors.onSurface,
+                            ),
+                          ),
+                          if (subtitle != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              subtitle!,
+                              style: text.bodyMedium?.copyWith(
+                                color: colors.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: text.bodyMedium?.copyWith(
-                          color: colors.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: colors.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 20,
-                    color: colors.primary,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 8,
-                      backgroundColor: colors.surfaceContainer,
-                      valueColor: AlwaysStoppedAnimation(colors.primary),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Text(
-                  '${(progress * 100).toInt()}%',
-                  style: text.labelLarge?.copyWith(
-                    color: colors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  ],
                 ),
               ],
             ),

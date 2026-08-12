@@ -38,6 +38,10 @@ export class SubmitReviewResultUseCase {
     await this.reviewLogRepository.create(log);
 
     // 2. Update spaced repetition progress via Progress module
-    await this.updateProgressUseCase.execute(userId, dto.characterId, dto.grade);
+    await this.updateProgressUseCase.execute(
+      userId,
+      dto.characterId,
+      dto.grade,
+    );
   }
 }

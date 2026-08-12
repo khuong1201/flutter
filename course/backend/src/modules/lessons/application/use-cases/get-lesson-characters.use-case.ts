@@ -12,13 +12,13 @@ export class GetLessonCharactersUseCase {
 
   async execute(lessonId: number): Promise<CharacterResponseDto[]> {
     const chars = await this.lessonRepository.findCharactersByLesson(lessonId);
-    return chars.map(c => ({
+    return chars.map((c) => ({
       id: c.id,
       charText: c.charText,
       language: c.language,
       meaning: c.meaning,
-      strokeData: c.strokeData as any,
-      pronunciation: c.pronunciation as any,
+      strokeData: c.strokeData,
+      pronunciation: c.pronunciation,
       audioKey: c.audioKey,
     }));
   }

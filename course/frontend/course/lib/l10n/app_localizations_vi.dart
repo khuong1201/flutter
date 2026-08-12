@@ -9,6 +9,12 @@ class AppLocalizationsVi extends AppLocalizations {
   AppLocalizationsVi([String locale = 'vi']) : super(locale);
 
   @override
+  String get appTitle => 'Zenith Lingua';
+
+  @override
+  String get homeSlogan => '\"Học ngôn ngữ mới, mở ra chân trời mới\"';
+
+  @override
   String get splashTagline => 'Mở khóa thế giới của bạn';
 
   @override
@@ -67,6 +73,32 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get roadmapTitle => 'Lộ trình của bạn';
+
+  @override
+  String get learningActivity => 'Hoạt động học tập';
+
+  @override
+  String lessonsCount(int count) {
+    return '$count bài';
+  }
+
+  @override
+  String get japaneseJLPT => 'Tiếng Nhật (JLPT)';
+
+  @override
+  String get japaneseJLPTDesc => 'Từ vựng & Kanji N5';
+
+  @override
+  String get chineseHSK => 'Tiếng Trung (HSK)';
+
+  @override
+  String get chineseHSKDesc => 'Căn bản HSK 1';
+
+  @override
+  String get less => 'Ít';
+
+  @override
+  String get more => 'Nhiều';
 
   @override
   String get emptyEmailError => 'Vui lòng nhập email';

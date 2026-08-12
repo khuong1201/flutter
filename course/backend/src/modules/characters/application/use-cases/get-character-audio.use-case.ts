@@ -9,7 +9,7 @@ import type { IStorageService } from '../../../audio/application/ports/storage-s
 @Injectable()
 export class GetCharacterAudioUseCase {
   private readonly logger = new Logger(GetCharacterAudioUseCase.name);
-  
+
   // In-memory lock to prevent multiple simultaneous TTS generations for the same character
   private locks = new Map<number, Promise<string>>();
 
@@ -24,7 +24,7 @@ export class GetCharacterAudioUseCase {
 
   async execute(id: number): Promise<{ url: string }> {
     const character = await this.characterRepository.findById(id);
-    
+
     if (!character) {
       throw new NotFoundException('Character not found');
     }
@@ -35,7 +35,9 @@ export class GetCharacterAudioUseCase {
 
     // Use lock to prevent concurrent generations
     if (this.locks.has(id)) {
-      this.logger.log(`Audio generation for character ${id} is already in progress, waiting...`);
+      this.logger.log(
+        `Audio generation for character ${id} is already in progress, waiting...`,
+      );
       const key = await this.locks.get(id);
       return { url: this.storageService.getUrl(key!) };
     }
@@ -53,18 +55,26 @@ export class GetCharacterAudioUseCase {
 
   private async generateAndStoreAudio(character: any): Promise<string> {
     try {
-      this.logger.log(`Downloading audio stream for character ${character.charText}`);
-      const audioBuffer = await this.audioProvider.generateAudio(character.charText, character.language);
-      
+      this.logger.log(
+        `Downloading audio stream for character ${character.charText}`,
+      );
+      const audioBuffer = await this.audioProvider.generateAudio(
+        character.charText,
+        character.language,
+      );
+
       const audioKey = `audio/characters/${character.language}_${character.charText}.mp3`;
       await this.storageService.upload(audioKey, audioBuffer, 'audio/mpeg');
-      
+
       character.audioKey = audioKey;
       await this.characterRepository.update(character);
-      
+
       return audioKey;
     } catch (error) {
-      this.logger.error(`Failed to generate/store audio for character ${character.id}`, error.stack);
+      this.logger.error(
+        `Failed to generate/store audio for character ${character.id}`,
+        error.stack,
+      );
       throw error;
     }
   }

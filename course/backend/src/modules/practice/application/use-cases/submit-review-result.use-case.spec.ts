@@ -1,6 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SubmitReviewResultUseCase, SubmitReviewDto } from './submit-review-result.use-case';
-import { REVIEW_LOG_REPOSITORY, IReviewLogRepository } from '../../domain/repositories/review-log.repository.interface';
+import {
+  SubmitReviewResultUseCase,
+  SubmitReviewDto,
+} from './submit-review-result.use-case';
+import {
+  REVIEW_LOG_REPOSITORY,
+  IReviewLogRepository,
+} from '../../domain/repositories/review-log.repository.interface';
 import { UpdateProgressUseCase } from '../../../progress/application/use-cases/update-progress.use-case';
 
 describe('SubmitReviewResultUseCase', () => {
@@ -32,8 +38,12 @@ describe('SubmitReviewResultUseCase', () => {
     }).compile();
 
     useCase = module.get<SubmitReviewResultUseCase>(SubmitReviewResultUseCase);
-    reviewLogRepository = module.get<IReviewLogRepository>(REVIEW_LOG_REPOSITORY);
-    updateProgressUseCase = module.get<UpdateProgressUseCase>(UpdateProgressUseCase);
+    reviewLogRepository = module.get<IReviewLogRepository>(
+      REVIEW_LOG_REPOSITORY,
+    );
+    updateProgressUseCase = module.get<UpdateProgressUseCase>(
+      UpdateProgressUseCase,
+    );
   });
 
   it('should save review log and update progress', async () => {
@@ -44,6 +54,10 @@ describe('SubmitReviewResultUseCase', () => {
     await useCase.execute('user-1', dto);
 
     expect(mockReviewLogRepository.create).toHaveBeenCalled();
-    expect(mockUpdateProgressUseCase.execute).toHaveBeenCalledWith('user-1', 1, 5);
+    expect(mockUpdateProgressUseCase.execute).toHaveBeenCalledWith(
+      'user-1',
+      1,
+      5,
+    );
   });
 });

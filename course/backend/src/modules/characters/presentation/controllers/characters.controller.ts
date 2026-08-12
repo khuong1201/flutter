@@ -1,5 +1,19 @@
-import { Controller, Get, Param, ParseIntPipe, Query, UseGuards, Redirect } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiParam } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+  UseGuards,
+  Redirect,
+} from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiBearerAuth,
+  ApiQuery,
+  ApiParam,
+} from '@nestjs/swagger';
 import { GetCharacterDetailsUseCase } from '../../application/use-cases/get-character-details.use-case';
 import { SearchCharactersUseCase } from '../../application/use-cases/search-characters.use-case';
 import { GetCharacterAudioUseCase } from '../../application/use-cases/get-character-audio.use-case';
@@ -18,10 +32,26 @@ export class CharactersController {
 
   @Get()
   @ApiOperation({ summary: 'Search characters by text or meaning' })
-  @ApiQuery({ name: 'q', required: false, type: String, description: 'Search query' })
-  @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Limit results' })
-  async searchCharacters(@Query('q') query: string, @Query('limit') limit: number = 10) {
-    return this.searchCharactersUseCase.execute(query || '', Number(limit) || 10);
+  @ApiQuery({
+    name: 'q',
+    required: false,
+    type: String,
+    description: 'Search query',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'Limit results',
+  })
+  async searchCharacters(
+    @Query('q') query: string,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.searchCharactersUseCase.execute(
+      query || '',
+      Number(limit) || 10,
+    );
   }
 
   @Get(':id')

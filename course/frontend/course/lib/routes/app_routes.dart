@@ -6,4 +6,5 @@ abstract final class AppRoutes {
   static const register = '/register';
   static const home = '/home';
   static const settings = '/settings';
+  static const character = '/character/:id';
 }

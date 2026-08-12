@@ -15,7 +15,7 @@ import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interfa
     {
       provide: LEVEL_REPOSITORY,
       useClass: PrismaLevelRepository,
-    }
-  ]
+    },
+  ],
 })
 export class LevelsModule {}

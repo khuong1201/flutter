@@ -24,7 +24,11 @@ export class CharacterResponseDto {
   @ApiProperty()
   meaning: string;
 
-  @ApiProperty({ type: [StrokeDto], description: 'List of strokes containing SVG paths and order for drawing/tracing' })
+  @ApiProperty({
+    type: [StrokeDto],
+    description:
+      'List of strokes containing SVG paths and order for drawing/tracing',
+  })
   strokeData: StrokeDto[];
 
   @ApiPropertyOptional()

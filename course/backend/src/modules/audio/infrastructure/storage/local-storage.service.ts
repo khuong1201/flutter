@@ -25,7 +25,7 @@ export class LocalStorageService implements IStorageService {
 
     await fs.promises.writeFile(filePath, data);
     this.logger.log(`File saved locally: ${filePath}`);
-    
+
     return this.getUrl(key);
   }
 

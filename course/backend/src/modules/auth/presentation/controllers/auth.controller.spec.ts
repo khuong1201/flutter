@@ -11,21 +11,27 @@ describe('AuthController', () => {
       providers: [
         {
           provide: SocialLoginUseCase,
-          useValue: { execute: jest.fn() }
-        }
-      ]
+          useValue: { execute: jest.fn() },
+        },
+      ],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);
   });
 
   it('should return a mock token on login', async () => {
-    const result = await controller.login({ email: 'test@example.com', password: 'password' });
+    const result = await controller.login({
+      email: 'test@example.com',
+      password: 'password',
+    });
     expect(result).toEqual({ token: 'mock-jwt-token' });
   });
 
   it('should return success message on register', async () => {
-    const result = await controller.register({ email: 'test@example.com', password: 'password' });
+    const result = await controller.register({
+      email: 'test@example.com',
+      password: 'password',
+    });
     expect(result).toEqual({ message: 'User registered successfully' });
   });
 });

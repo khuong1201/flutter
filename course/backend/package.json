@@ -8,8 +8,6 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "import:data": "ts-node scripts/import-datasets.ts",
-    "import:dict": "ts-node scripts/import-dictionary.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

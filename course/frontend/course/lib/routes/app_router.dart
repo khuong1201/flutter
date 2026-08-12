@@ -2,6 +2,7 @@ import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:course/features/auth/presentation/pages/login_page.dart';
 import 'package:course/features/auth/presentation/pages/register_page.dart';
 import 'package:course/features/auth/presentation/pages/splash_page.dart';
+import 'package:course/features/characters/presentation/pages/character_page.dart';
 import 'package:course/features/home/presentation/pages/home_page.dart';
 import 'package:course/features/settings/presentation/pages/settings_page.dart';
 import 'package:go_router/go_router.dart';
@@ -66,6 +67,13 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.settings,
         builder: (_, _) => const SettingsPage(),
+      ),
+      GoRoute(
+        path: AppRoutes.character,
+        builder: (_, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '') ?? 0;
+          return CharacterPage(characterId: id);
+        },
       ),
     ],
   );

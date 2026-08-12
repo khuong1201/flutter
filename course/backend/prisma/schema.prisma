@@ -28,9 +28,10 @@ model User {
   createdAt      DateTime  @default(now()) @map("created_at")
   updatedAt      DateTime  @default(now()) @updatedAt @map("updated_at")
 
-  progress    UserProgress[]
-  reviewLogs  ReviewLog[]
-  userLessons UserLesson[]
+  progress      UserProgress[]
+  reviewLogs    ReviewLog[]
+  userLessons   UserLesson[]
+  contributions UserContribution[]
 
   @@map("users")
 }
@@ -169,4 +170,30 @@ model UserLesson {
 
   @@id([userId, lessonId])
   @@map("user_lessons")
+}
+
+model UserContribution {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  date      DateTime @db.Date
+  count     Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
+  @@map("user_contributions")
+}
+
+model DatasetVersion {
+  id         Int      @id @default(autoincrement())
+  source     String   @db.VarChar(50)
+  version    String   @db.VarChar(50)
+  status     String   @db.VarChar(20)
+  error      String?  @db.Text
+  importedAt DateTime @default(now()) @map("imported_at")
+
+  @@unique([source, version])
+  @@map("dataset_versions")
 }

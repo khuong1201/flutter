@@ -14,7 +14,7 @@ export class HealthController {
     private health: HealthCheckService,
     private prismaHealth: PrismaHealthIndicator,
     private prisma: PrismaService,
-  ) { }
+  ) {}
 
   @Get()
   @HealthCheck()

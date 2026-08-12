@@ -12,7 +12,7 @@ export class GetUserProfileUseCase {
 
   async execute(userId: string): Promise<UserResponseDto> {
     const user = await this.userRepository.findById(userId);
-    
+
     if (!user) {
       throw new NotFoundException('User not found');
     }

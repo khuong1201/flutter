@@ -8,7 +8,10 @@ import { ProgressMapper } from '../../mappers/progress.mapper';
 export class PrismaProgressRepository implements IProgressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByUserAndCharacter(userId: string, characterId: number): Promise<UserProgress | null> {
+  async findByUserAndCharacter(
+    userId: string,
+    characterId: number,
+  ): Promise<UserProgress | null> {
     const progress = await this.prisma.userProgress.findFirst({
       where: { userId, characterId },
     });
@@ -22,20 +25,29 @@ export class PrismaProgressRepository implements IProgressRepository {
     const records = await this.prisma.userProgress.findMany({
       where: {
         userId,
-        nextReviewAt: { lte: date }
+        nextReviewAt: { lte: date },
       },
     });
     return records.map(ProgressMapper.toDomain);
   }
 
-  async getStats(userId: string): Promise<{ totalLearned: number, dueReviews: number, totalXp: number, currentStreak: number, longestStreak: number }> {
+  async getStats(userId: string): Promise<{
+    totalLearned: number;
+    dueReviews: number;
+    totalXp: number;
+    currentStreak: number;
+    longestStreak: number;
+  }> {
     const totalLearned = await this.prisma.userProgress.count({
-      where: { userId, status: 'learned' }
+      where: { userId, status: 'learned' },
     });
     const dueReviews = await this.prisma.userProgress.count({
-      where: { userId, nextReviewAt: { lte: new Date() } }
+      where: { userId, nextReviewAt: { lte: new Date() } },
     });
-    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { xpPoints: true, currentStreak: true, longestStreak: true } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { xpPoints: true, currentStreak: true, longestStreak: true },
+    });
 
     return {
       totalLearned,
@@ -48,7 +60,7 @@ export class PrismaProgressRepository implements IProgressRepository {
 
   async save(progress: UserProgress): Promise<UserProgress> {
     const data = ProgressMapper.toPersistence(progress);
-    
+
     // Check if exists
     const existing = await this.prisma.userProgress.findUnique({
       where: { id: progress.id },

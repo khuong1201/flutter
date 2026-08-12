@@ -33,16 +33,31 @@ export class LoginUseCase {
   async execute(data: LoginDto): Promise<{ accessToken: string }> {
     const user = await this.userRepository.findByEmail(data.email);
     if (!user) {
-      throw new AppException(ApiCode.INVALID_CREDENTIALS, 'Invalid email or password', 401);
+      throw new AppException(
+        ApiCode.INVALID_CREDENTIALS,
+        'Invalid email or password',
+        401,
+      );
     }
 
     if (!user.passwordHash) {
-      throw new AppException(ApiCode.INVALID_CREDENTIALS, 'User registered via social provider. Please use social login.', 401);
+      throw new AppException(
+        ApiCode.INVALID_CREDENTIALS,
+        'User registered via social provider. Please use social login.',
+        401,
+      );
     }
 
-    const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      data.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
-      throw new AppException(ApiCode.INVALID_CREDENTIALS, 'Invalid email or password', 401);
+      throw new AppException(
+        ApiCode.INVALID_CREDENTIALS,
+        'Invalid email or password',
+        401,
+      );
     }
 
     const payload = { sub: user.id, email: user.email };

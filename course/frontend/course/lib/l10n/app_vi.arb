@@ -1,6 +1,8 @@
 {
   "@@locale": "vi",
 
+  "appTitle": "Zenith Lingua",
+  "homeSlogan": "\"Học ngôn ngữ mới, mở ra chân trời mới\"",
   "splashTagline": "Mở khóa thế giới của bạn",
   "splashLoading": "Đang chuẩn bị hành trang...",
   
@@ -25,6 +27,21 @@
   "homeGreeting": "Chào buổi sáng",
   "dailyGoal": "Mục tiêu hằng ngày",
   "roadmapTitle": "Lộ trình của bạn",
+  "learningActivity": "Hoạt động học tập",
+  "lessonsCount": "{count} bài",
+  "@lessonsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "japaneseJLPT": "Tiếng Nhật (JLPT)",
+  "japaneseJLPTDesc": "Từ vựng & Kanji N5",
+  "chineseHSK": "Tiếng Trung (HSK)",
+  "chineseHSKDesc": "Căn bản HSK 1",
+  "less": "Ít",
+  "more": "Nhiều",
 
   "emptyEmailError": "Vui lòng nhập email",
   "invalidEmailError": "Email không hợp lệ",

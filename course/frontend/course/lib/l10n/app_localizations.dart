@@ -98,6 +98,18 @@ abstract class AppLocalizations {
     Locale('vi'),
   ];
 
+  /// No description provided for @appTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Zenith Lingua'**
+  String get appTitle;
+
+  /// No description provided for @homeSlogan.
+  ///
+  /// In vi, this message translates to:
+  /// **'\"Học ngôn ngữ mới, mở ra chân trời mới\"'**
+  String get homeSlogan;
+
   /// No description provided for @splashTagline.
   ///
   /// In vi, this message translates to:
@@ -217,6 +229,54 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Lộ trình của bạn'**
   String get roadmapTitle;
+
+  /// No description provided for @learningActivity.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoạt động học tập'**
+  String get learningActivity;
+
+  /// No description provided for @lessonsCount.
+  ///
+  /// In vi, this message translates to:
+  /// **'{count} bài'**
+  String lessonsCount(int count);
+
+  /// No description provided for @japaneseJLPT.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng Nhật (JLPT)'**
+  String get japaneseJLPT;
+
+  /// No description provided for @japaneseJLPTDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ vựng & Kanji N5'**
+  String get japaneseJLPTDesc;
+
+  /// No description provided for @chineseHSK.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tiếng Trung (HSK)'**
+  String get chineseHSK;
+
+  /// No description provided for @chineseHSKDesc.
+  ///
+  /// In vi, this message translates to:
+  /// **'Căn bản HSK 1'**
+  String get chineseHSKDesc;
+
+  /// No description provided for @less.
+  ///
+  /// In vi, this message translates to:
+  /// **'Ít'**
+  String get less;
+
+  /// No description provided for @more.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nhiều'**
+  String get more;
 
   /// No description provided for @emptyEmailError.
   ///

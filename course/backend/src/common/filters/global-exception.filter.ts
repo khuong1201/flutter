@@ -29,7 +29,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       code = exception.code;
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
-      
+
       switch (status) {
         case HttpStatus.BAD_REQUEST:
           code = ApiCode.BAD_REQUEST;

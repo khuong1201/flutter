@@ -5,7 +5,7 @@ class UserTokenModel extends UserTokenEntity {
 
   factory UserTokenModel.fromJson(Map<String, dynamic> json) {
     return UserTokenModel(
-      token: json['token'] ?? '',
+      token: json['accessToken'] ?? '',
     );
   }
 }

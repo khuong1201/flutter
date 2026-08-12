@@ -12,7 +12,7 @@ export class GetCharacterDetailsUseCase {
 
   async execute(id: number): Promise<CharacterResponseDto> {
     const character = await this.characterRepository.findById(id);
-    
+
     if (!character) {
       throw new NotFoundException('Character not found');
     }
@@ -25,11 +25,11 @@ export class GetCharacterDetailsUseCase {
       strokeData: character.strokeData,
       pronunciation: character.pronunciation,
       audioKey: character.audioKey || undefined,
-      radicals: character.radicals?.map(r => ({
+      radicals: character.radicals?.map((r) => ({
         radicalText: r.radicalText,
         meaning: r.meaning,
       })),
-      vocabularies: character.vocabularies?.map(v => ({
+      vocabularies: character.vocabularies?.map((v) => ({
         word: v.word,
         meaning: v.meaning,
         pronunciation: v.pronunciation || '',

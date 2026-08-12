@@ -1,6 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UpdateProgressUseCase } from './update-progress.use-case';
-import { PROGRESS_REPOSITORY, IProgressRepository } from '../../domain/repositories/progress.repository.interface';
+import {
+  PROGRESS_REPOSITORY,
+  IProgressRepository,
+} from '../../domain/repositories/progress.repository.interface';
 import { UserProgress } from '../../domain/entities/user-progress.entity';
 
 describe('UpdateProgressUseCase', () => {
@@ -50,9 +53,11 @@ describe('UpdateProgressUseCase', () => {
       1,
       new Date(),
       1,
-      1
+      1,
     );
-    mockProgressRepository.findByUserAndCharacter.mockResolvedValue(existingProgress);
+    mockProgressRepository.findByUserAndCharacter.mockResolvedValue(
+      existingProgress,
+    );
     mockProgressRepository.save.mockImplementation(async (p) => p);
 
     const result = await useCase.execute('uuid-user', 1, 4);

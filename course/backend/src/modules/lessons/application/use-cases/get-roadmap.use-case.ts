@@ -38,12 +38,12 @@ export class GetRoadmapUseCase {
 
     for (const level of levels) {
       const lessons = await this.lessonRepository.findLessonsByLevel(level.id);
-      const lessonDtos: RoadmapLessonDto[] = lessons.map(lesson => {
+      const lessonDtos: RoadmapLessonDto[] = lessons.map((lesson) => {
         const ul = userLessonMap.get(lesson.id);
         // If not in UserLesson, default to 'locked', unless it's the very first lesson (orderIndex 1, level 1)
         // Usually, unlocking is handled when level/language is chosen, or first is always unlocked.
         let status = ul ? ul.status : 'locked';
-        
+
         // Simple default logic: first lesson is unlocked if no record exists
         if (!ul && lesson.orderIndex === 1 && level.code === 'N5') {
           status = 'unlocked';
