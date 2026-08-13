@@ -190,4 +190,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get logout => 'Logout';
+
+  @override
+  String get characterDetailTitle => 'Character Details';
+
+  @override
+  String get characterMeaningUpdating => 'Updating meaning...';
+
+  @override
+  String get audioFeatureComingSoon => 'Audio feature is coming soon';
+
+  @override
+  String get pronunciation => 'Pronunciation';
+
+  @override
+  String get radicals => 'Radicals';
+
+  @override
+  String get vocabularies => 'Example Vocabularies';
+
+  @override
+  String get animationPauseTooltip => 'Pause (Clear strokes)';
+
+  @override
+  String get animationPlayTooltip => 'Play from beginning';
+
+  @override
+  String characterLoadError(String error) {
+    return 'An error occurred: $error';
+  }
 }

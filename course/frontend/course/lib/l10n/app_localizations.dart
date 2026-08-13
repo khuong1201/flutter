@@ -457,6 +457,60 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đăng xuất'**
   String get logout;
+
+  /// No description provided for @characterDetailTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Chi tiết chữ Hán'**
+  String get characterDetailTitle;
+
+  /// No description provided for @characterMeaningUpdating.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang cập nhật ý nghĩa...'**
+  String get characterMeaningUpdating;
+
+  /// No description provided for @audioFeatureComingSoon.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tính năng phát âm thanh đang được hoàn thiện'**
+  String get audioFeatureComingSoon;
+
+  /// No description provided for @pronunciation.
+  ///
+  /// In vi, this message translates to:
+  /// **'Phát âm'**
+  String get pronunciation;
+
+  /// No description provided for @radicals.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bộ thủ'**
+  String get radicals;
+
+  /// No description provided for @vocabularies.
+  ///
+  /// In vi, this message translates to:
+  /// **'Từ vựng ví dụ'**
+  String get vocabularies;
+
+  /// No description provided for @animationPauseTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Tạm dừng (Mất nét)'**
+  String get animationPauseTooltip;
+
+  /// No description provided for @animationPlayTooltip.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vẽ lại từ đầu'**
+  String get animationPlayTooltip;
+
+  /// No description provided for @characterLoadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đã xảy ra lỗi: {error}'**
+  String characterLoadError(String error);
 }
 
 class _AppLocalizationsDelegate

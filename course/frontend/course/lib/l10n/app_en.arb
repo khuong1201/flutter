@@ -80,5 +80,22 @@
   "darkTheme": "Dark",
   "systemTheme": "System",
   "account": "Account",
-  "logout": "Logout"
+  "logout": "Logout",
+
+  "characterDetailTitle": "Character Details",
+  "characterMeaningUpdating": "Updating meaning...",
+  "audioFeatureComingSoon": "Audio feature is coming soon",
+  "pronunciation": "Pronunciation",
+  "radicals": "Radicals",
+  "vocabularies": "Example Vocabularies",
+  "animationPauseTooltip": "Pause (Clear strokes)",
+  "animationPlayTooltip": "Play from beginning",
+  "characterLoadError": "An error occurred: {error}",
+  "@characterLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

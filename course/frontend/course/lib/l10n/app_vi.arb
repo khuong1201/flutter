@@ -79,5 +79,22 @@
   "darkTheme": "Tối",
   "systemTheme": "Hệ thống",
   "account": "Tài khoản",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+
+  "characterDetailTitle": "Chi tiết chữ Hán",
+  "characterMeaningUpdating": "Đang cập nhật ý nghĩa...",
+  "audioFeatureComingSoon": "Tính năng phát âm thanh đang được hoàn thiện",
+  "pronunciation": "Phát âm",
+  "radicals": "Bộ thủ",
+  "vocabularies": "Từ vựng ví dụ",
+  "animationPauseTooltip": "Tạm dừng (Mất nét)",
+  "animationPlayTooltip": "Vẽ lại từ đầu",
+  "characterLoadError": "Đã xảy ra lỗi: {error}",
+  "@characterLoadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  }
 }

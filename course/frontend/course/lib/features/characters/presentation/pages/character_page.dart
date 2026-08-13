@@ -4,6 +4,7 @@ import 'package:course/features/characters/presentation/widgets/stroke_animation
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:course/core/utils/l10n_extension.dart';
 
 class CharacterPage extends StatelessWidget {
   final int characterId;
@@ -33,7 +34,7 @@ class _CharacterPageView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chi tiết chữ Hán'),
+        title: Text(context.l10n.characterDetailTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -46,7 +47,7 @@ class _CharacterPageView extends StatelessWidget {
           if (state is CharacterError) {
             return Center(
               child: Text(
-                'Đã xảy ra lỗi: ${state.failure.messageKey}',
+                context.l10n.characterLoadError(state.failure.messageKey),
                 style: text.bodyLarge?.copyWith(color: colors.error),
               ),
             );
@@ -66,7 +67,7 @@ class _CharacterPageView extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          char.meaning.isNotEmpty ? char.meaning : 'Đang cập nhật ý nghĩa...',
+                          char.meaning.isNotEmpty ? char.meaning : context.l10n.characterMeaningUpdating,
                           style: text.headlineMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: colors.onSurface,
@@ -79,7 +80,7 @@ class _CharacterPageView extends StatelessWidget {
                         onPressed: () {
                           // TODO: Xử lý phát âm thanh audioKey
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Tính năng phát âm thanh đang được hoàn thiện')),
+                            SnackBar(content: Text(context.l10n.audioFeatureComingSoon)),
                           );
                         },
                       ),
@@ -136,7 +137,7 @@ class _CharacterPageView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Phát âm',
+            context.l10n.pronunciation,
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
@@ -185,7 +186,7 @@ class _CharacterPageView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Bộ thủ',
+          context.l10n.radicals,
           style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
@@ -212,7 +213,7 @@ class _CharacterPageView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Từ vựng ví dụ',
+          context.l10n.vocabularies,
           style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),

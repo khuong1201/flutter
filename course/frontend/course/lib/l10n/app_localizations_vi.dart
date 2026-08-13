@@ -190,4 +190,34 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get logout => 'Đăng xuất';
+
+  @override
+  String get characterDetailTitle => 'Chi tiết chữ Hán';
+
+  @override
+  String get characterMeaningUpdating => 'Đang cập nhật ý nghĩa...';
+
+  @override
+  String get audioFeatureComingSoon =>
+      'Tính năng phát âm thanh đang được hoàn thiện';
+
+  @override
+  String get pronunciation => 'Phát âm';
+
+  @override
+  String get radicals => 'Bộ thủ';
+
+  @override
+  String get vocabularies => 'Từ vựng ví dụ';
+
+  @override
+  String get animationPauseTooltip => 'Tạm dừng (Mất nét)';
+
+  @override
+  String get animationPlayTooltip => 'Vẽ lại từ đầu';
+
+  @override
+  String characterLoadError(String error) {
+    return 'Đã xảy ra lỗi: $error';
+  }
 }

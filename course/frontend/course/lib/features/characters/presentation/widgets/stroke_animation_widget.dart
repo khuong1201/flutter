@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:course/features/characters/domain/entities/character_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:path_drawing/path_drawing.dart';
+import 'package:course/core/utils/l10n_extension.dart';
 import 'character_stroke_painter.dart';
 
 class StrokeAnimationWidget extends StatefulWidget {
@@ -175,7 +176,7 @@ class _StrokeAnimationWidgetState extends State<StrokeAnimationWidget>
                 backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
                 foregroundColor: Theme.of(context).colorScheme.primary,
                 onPressed: _togglePlayPause,
-                tooltip: _isPlaying ? 'Tạm dừng (Mất nét)' : 'Vẽ lại từ đầu',
+                tooltip: _isPlaying ? context.l10n.animationPauseTooltip : context.l10n.animationPlayTooltip,
                 child: Icon(_isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
               ),
             ),
