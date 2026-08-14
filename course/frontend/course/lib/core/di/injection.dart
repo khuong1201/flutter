@@ -13,9 +13,15 @@ import 'package:course/features/characters/data/repositories/character_repositor
 import 'package:course/features/characters/domain/repositories/character_repository.dart';
 import 'package:course/features/characters/domain/usecases/get_character_usecase.dart';
 import 'package:course/features/characters/presentation/cubit/character_cubit.dart';
+import 'package:course/features/practice/data/datasources/practice_remote_datasource.dart';
+import 'package:course/features/practice/data/repositories/practice_repository_impl.dart';
+import 'package:course/features/practice/domain/repositories/practice_repository.dart';
+import 'package:course/features/practice/domain/usecases/submit_review_usecase.dart';
+import 'package:course/features/practice/domain/usecases/evaluate_handwriting_usecase.dart';
+import 'package:course/features/practice/presentation/cubit/practice_cubit.dart';
 import 'package:course/features/home/data/repositories/home_repository_impl.dart';
 import 'package:course/features/home/domain/repositories/home_repository.dart';
-import 'package:course/features/home/domain/usecases/get_contributions_usecase.dart';
+import 'package:course/features/home/domain/usecases/get_progress_stats_usecase.dart';
 import 'package:course/features/home/presentation/cubit/home_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -86,6 +92,14 @@ Future<void> configureDependencies() async {
     () => CharacterRepositoryImpl(remoteDataSource: sl()),
   );
 
+  sl.registerLazySingleton<PracticeRemoteDataSource>(
+    () => PracticeRemoteDataSourceImpl(dio: sl()),
+  );
+
+  sl.registerLazySingleton<PracticeRepository>(
+    () => PracticeRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // UseCases
   sl.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(sl()),
@@ -95,12 +109,20 @@ Future<void> configureDependencies() async {
     () => RegisterUseCase(sl()),
   );
 
-  sl.registerLazySingleton<GetContributionsUseCase>(
-    () => GetContributionsUseCase(sl()),
+  sl.registerLazySingleton<GetProgressStatsUseCase>(
+    () => GetProgressStatsUseCase(sl()),
   );
 
   sl.registerLazySingleton<GetCharacterUseCase>(
     () => GetCharacterUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<SubmitReviewUseCase>(
+    () => SubmitReviewUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<EvaluateHandwritingUseCase>(
+    () => EvaluateHandwritingUseCase(sl()),
   );
 
   // Global Cubits
@@ -114,7 +136,7 @@ Future<void> configureDependencies() async {
 
   sl.registerFactory<HomeCubit>(
     () => HomeCubit(
-      getContributionsUseCase: sl(),
+      getProgressStatsUseCase: sl(),
     ),
   );
 
@@ -133,6 +155,13 @@ Future<void> configureDependencies() async {
   sl.registerLazySingleton<ThemeCubit>(
     () => ThemeCubit(
       sl(),
+    ),
+  );
+
+  sl.registerFactory<PracticeCubit>(
+    () => PracticeCubit(
+      submitReviewUseCase: sl(),
+      evaluateHandwritingUseCase: sl(),
     ),
   );
 }

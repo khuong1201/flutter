@@ -11,10 +11,8 @@ class RegisterForm extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.isPasswordVisible,
-    required this.selectedLanguage,
     required this.isLoading,
     required this.onPasswordVisibilityChanged,
-    required this.onLanguageChanged,
     required this.onRegister,
     required this.onBackToLogin,
   });
@@ -26,18 +24,10 @@ class RegisterForm extends StatelessWidget {
   final TextEditingController passwordController;
 
   final bool isPasswordVisible;
-  final String selectedLanguage;
   final bool isLoading;
-
   final VoidCallback onPasswordVisibilityChanged;
-  final ValueChanged<String> onLanguageChanged;
   final VoidCallback onRegister;
   final VoidCallback onBackToLogin;
-
-  static const _languageCodes = [
-    'ja',
-    'zh',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +71,6 @@ class RegisterForm extends StatelessWidget {
           const SizedBox(height: 16),
 
           _buildPasswordField(theme, l10n),
-
-          const SizedBox(height: 16),
-
-          _buildLanguageField(theme, l10n),
 
           const SizedBox(height: 32),
 
@@ -174,47 +160,6 @@ class RegisterForm extends StatelessWidget {
       ),
       onFieldSubmitted: (_) => onRegister(),
     );
-  }
-
-  Widget _buildLanguageField(
-    ThemeData theme,
-    dynamic l10n,
-  ) {
-    return DropdownButtonFormField<String>(
-      initialValue: selectedLanguage,
-      decoration: _inputDecoration(
-        theme,
-        labelText: l10n.targetLanguageLabel,
-        icon: Icons.translate_rounded,
-      ),
-      items: _languageCodes.map((code) {
-        return DropdownMenuItem<String>(
-          value: code,
-          child: Text(
-            _languageName(code, l10n),
-          ),
-        );
-      }).toList(),
-      onChanged: (value) {
-        if (value != null) {
-          onLanguageChanged(value);
-        }
-      },
-    );
-  }
-
-  String _languageName(
-    String code,
-    dynamic l10n,
-  ) {
-    switch (code) {
-      case 'ja':
-        return l10n.japaneseLanguage;
-      case 'zh':
-        return l10n.chineseLanguage;
-      default:
-        return code;
-    }
   }
 
   Widget _buildLoginNavigation(

@@ -1,8 +1,11 @@
 import 'package:course/features/characters/domain/entities/character_entity.dart';
 import 'package:course/features/characters/presentation/cubit/character_cubit.dart';
 import 'package:course/features/characters/presentation/widgets/stroke_animation_widget.dart';
+import 'package:course/features/characters/presentation/widgets/drawing_board_widget.dart';
+import 'package:course/features/practice/presentation/cubit/practice_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_drawing/path_drawing.dart';
 import 'package:get_it/get_it.dart';
 import 'package:course/core/utils/l10n_extension.dart';
 
@@ -16,15 +19,30 @@ class CharacterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => GetIt.I<CharacterCubit>()..loadCharacter(characterId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => GetIt.I<CharacterCubit>()..loadCharacter(characterId),
+        ),
+        BlocProvider(
+          create: (context) => GetIt.I<PracticeCubit>(),
+        ),
+      ],
       child: const _CharacterPageView(),
     );
   }
 }
 
-class _CharacterPageView extends StatelessWidget {
+class _CharacterPageView extends StatefulWidget {
   const _CharacterPageView();
+
+  @override
+  State<_CharacterPageView> createState() => _CharacterPageViewState();
+}
+
+class _CharacterPageViewState extends State<_CharacterPageView> {
+  bool _isPracticeMode = false;
+  List<List<Offset>> _currentStrokes = [];
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +50,52 @@ class _CharacterPageView extends StatelessWidget {
     final colors = theme.colorScheme;
     final text = theme.textTheme;
 
-    return Scaffold(
-      appBar: AppBar(
+    return BlocListener<PracticeCubit, PracticeState>(
+      listener: (context, state) {
+        if (state is PracticeSubmitting) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.submitting)),
+          );
+        } else if (state is PracticeEvaluationSuccess) {
+          showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: const Text('Kết quả chấm điểm'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    '${state.result.score} / 100',
+                    style: text.displayMedium?.copyWith(
+                      color: state.result.score > 80 ? colors.primary : colors.error,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(state.result.feedback, textAlign: TextAlign.center),
+                ],
+              ),
+              actions: [
+                FilledButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    setState(() {
+                      _isPracticeMode = false;
+                    });
+                  },
+                  child: const Text('Đóng'),
+                )
+              ],
+            )
+          );
+        } else if (state is PracticeSubmitFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.characterLoadError(state.failure.messageKey))),
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
         title: Text(context.l10n.characterDetailTitle),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -88,20 +150,76 @@ class _CharacterPageView extends StatelessWidget {
                   ),
                   const SizedBox(height: 32),
                   
-                  // Animation Widget (Ô chữ)
+                  // Animation Widget hoặc Drawing Board
                   Center(
-                    child: StrokeAnimationWidget(
-                      strokeData: char.strokeData,
-                      size: MediaQuery.sizeOf(context).width - 32, // To ra nữa
-                      strokeColor: colors.primary,
-                      outlineColor: colors.onSurfaceVariant,
-                    ),
+                    child: _isPracticeMode
+                        ? DrawingBoardWidget(
+                            outlinePaths: char.strokes.map((e) => parseSvgPathData(e.outlinePath)).toList(),
+                            size: MediaQuery.sizeOf(context).width - 32,
+                            onStrokesUpdated: (strokes) {
+                              _currentStrokes = strokes;
+                            },
+                          )
+                        : StrokeAnimationWidget(
+                            strokeData: char.strokes,
+                            size: MediaQuery.sizeOf(context).width - 32,
+                            strokeColor: colors.primary,
+                            outlineColor: colors.onSurfaceVariant,
+                          ),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  // Nút chuyển chế độ & Nộp bài
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      OutlinedButton.icon(
+                        icon: Icon(_isPracticeMode ? Icons.auto_awesome : Icons.draw),
+                        label: Text(_isPracticeMode ? context.l10n.viewGuide : context.l10n.practiceWriting),
+                        onPressed: () {
+                          setState(() {
+                            _isPracticeMode = !_isPracticeMode;
+                          });
+                        },
+                      ),
+                      if (_isPracticeMode) ...[
+                        const SizedBox(width: 16),
+                        FilledButton.icon(
+                          icon: const Icon(Icons.check),
+                          label: Text(context.l10n.submitReview),
+                          onPressed: () {
+                            if (_currentStrokes.isEmpty) {
+                               ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(context.l10n.emptyStrokes)),
+                              );
+                              return;
+                            }
+                            
+                            final RenderBox? box = context.findRenderObject() as RenderBox?;
+                            double size = box?.size.width ?? 300;
+                            
+                            final scaledStrokes = _currentStrokes.map((stroke) => 
+                              stroke.map((p) => {
+                                'x': (p.dx / size * 1024).round(),
+                                'y': (p.dy / size * 1024).round()
+                              }).toList()
+                            ).toList();
+              
+                            context.read<PracticeCubit>().evaluateHandwriting(
+                              char.id, 
+                              scaledStrokes
+                            );
+                          },
+                        ),
+                      ],
+                    ],
                   ),
                   
                   const SizedBox(height: 32),
                   
                   // Phát âm
-                  if (char.pronunciation != null) _buildPronunciation(context, char.pronunciation!),
+                  if (char.readings.isNotEmpty) _buildReadings(context, char.readings),
                   
                   const SizedBox(height: 24),
                   
@@ -120,10 +238,10 @@ class _CharacterPageView extends StatelessWidget {
           return const SizedBox.shrink();
         },
       ),
-    );
+    ));
   }
 
-  Widget _buildPronunciation(BuildContext context, PronunciationEntity pronunciation) {
+  Widget _buildReadings(BuildContext context, List<ReadingEntity> readings) {
     final colors = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
 
@@ -141,38 +259,28 @@ class _CharacterPageView extends StatelessWidget {
             style: text.titleMedium?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          if (pronunciation.on.isNotEmpty)
-            Row(
+          ...readings.map((r) => Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: colors.primaryContainer,
+                    color: r.readingType == 'onyomi' ? colors.primaryContainer : colors.secondaryContainer,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text('Onyomi', style: text.labelSmall?.copyWith(color: colors.onPrimaryContainer)),
-                ),
-                const SizedBox(width: 12),
-                Expanded(child: Text(pronunciation.on.join(', '))),
-              ],
-            ),
-          if (pronunciation.on.isNotEmpty && pronunciation.kun.isNotEmpty)
-            const SizedBox(height: 8),
-          if (pronunciation.kun.isNotEmpty)
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: colors.secondaryContainer,
-                    borderRadius: BorderRadius.circular(8),
+                  child: Text(
+                    r.readingType, 
+                    style: text.labelSmall?.copyWith(
+                      color: r.readingType == 'onyomi' ? colors.onPrimaryContainer : colors.onSecondaryContainer
+                    )
                   ),
-                  child: Text('Kunyomi', style: text.labelSmall?.copyWith(color: colors.onSecondaryContainer)),
                 ),
                 const SizedBox(width: 12),
-                Expanded(child: Text(pronunciation.kun.join(', '))),
+                Expanded(child: Text(r.reading)),
               ],
             ),
+          )),
         ],
       ),
     );

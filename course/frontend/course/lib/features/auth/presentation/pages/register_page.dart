@@ -22,7 +22,6 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
 
   bool _isPasswordVisible = false;
-  String _selectedLanguage = 'ja';
 
   @override
   void dispose() {
@@ -60,16 +59,10 @@ class _RegisterPageState extends State<RegisterPage> {
                   emailController: _emailController,
                   passwordController: _passwordController,
                   isPasswordVisible: _isPasswordVisible,
-                  selectedLanguage: _selectedLanguage,
                   isLoading: state is AuthLoading,
                   onPasswordVisibilityChanged: () {
                     setState(() {
                       _isPasswordVisible = !_isPasswordVisible;
-                    });
-                  },
-                  onLanguageChanged: (language) {
-                    setState(() {
-                      _selectedLanguage = language;
                     });
                   },
                   onRegister: _register,
@@ -89,11 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
   ) {
     if (state is AuthRegisterSuccess) {
       _showSuccessMessage(context);
-      Future.delayed(const Duration(milliseconds: 800), () {
-        if (context.mounted) {
-          context.go('/login');
-        }
-      });
+      // Removed context.go('/login') because AuthAuthenticated will be emitted and handled by the router
       return;
     }
 
@@ -145,7 +134,6 @@ class _RegisterPageState extends State<RegisterPage> {
           _emailController.text.trim(),
           _passwordController.text,
           _nameController.text.trim(),
-          _selectedLanguage,
         );
   }
 }

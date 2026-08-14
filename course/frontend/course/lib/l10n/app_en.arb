@@ -97,5 +97,15 @@
         "type": "String"
       }
     }
-  }
+  },
+
+  "viewGuide": "View guide",
+  "practiceWriting": "Practice writing",
+  "submitReview": "Submit",
+  "emptyStrokes": "Please draw at least one stroke",
+  "evaluateTitle": "Evaluate your drawing",
+  "evaluatePrompt": "How would you grade your drawing (0-5)?",
+  "cancel": "Cancel",
+  "submitting": "Submitting...",
+  "submitSuccess": "Submitted successfully!"
 }

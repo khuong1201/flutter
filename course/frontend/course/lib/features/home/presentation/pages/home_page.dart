@@ -1,7 +1,7 @@
 import 'package:course/core/utils/l10n_extension.dart';
 import 'package:course/core/widgets/lesson_card.dart';
 import 'package:course/features/home/presentation/cubit/home_cubit.dart';
-import 'package:course/features/home/presentation/widgets/contribution_graph.dart';
+import 'package:course/features/home/domain/entities/progress_stats_entity.dart';
 import 'package:course/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,14 +98,7 @@ class HomePage extends StatelessWidget {
                   }
                   
                   if (state is HomeLoaded) {
-                    final contributionsMap = <DateTime, int>{};
-                    for (var item in state.contributions) {
-                      contributionsMap[item.date] = item.count;
-                    }
-                    
-                    return ContributionGraph(
-                      contributions: contributionsMap,
-                    );
+                    return _buildStatsGrid(context, state.stats, colors, text);
                   }
                   
                   if (state is HomeError) {
@@ -113,7 +106,7 @@ class HomePage extends StatelessWidget {
                       height: 160,
                       child: Center(
                         child: Text(
-                          'Không thể tải biểu đồ đóng góp',
+                          'Không thể tải dữ liệu thống kê',
                           style: text.bodyMedium?.copyWith(color: colors.error),
                         ),
                       ),
@@ -121,9 +114,7 @@ class HomePage extends StatelessWidget {
                   }
 
                   // Initial or empty state
-                  return const ContributionGraph(
-                    contributions: {},
-                  );
+                  return const SizedBox();
                 },
               ),
               const SizedBox(height: 24),
@@ -161,6 +152,56 @@ class HomePage extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildStatsGrid(BuildContext context, ProgressStatsEntity stats, ColorScheme colors, TextTheme text) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Tiến độ của bạn',
+          style: text.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(child: _buildStatCard('Đã học', '${stats.totalLearned}', Icons.menu_book, colors.primaryContainer, colors.onPrimaryContainer, text)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildStatCard('Thành thạo', '${stats.totalMastered}', Icons.workspace_premium, colors.secondaryContainer, colors.onSecondaryContainer, text)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(child: _buildStatCard('Độ chính xác', '${stats.accuracyRate}%', Icons.check_circle, colors.tertiaryContainer, colors.onTertiaryContainer, text)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildStatCard('Chuỗi ngày', '${stats.currentStreak} 🔥', Icons.local_fire_department, colors.errorContainer, colors.onErrorContainer, text)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _buildStatCard('Điểm XP', '${stats.xpPoints} XP', Icons.stars, colors.surfaceContainerHigh, colors.onSurface, text),
+      ],
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, IconData icon, Color bgColor, Color textColor, TextTheme text) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: textColor),
+          const SizedBox(height: 12),
+          Text(title, style: text.labelMedium?.copyWith(color: textColor)),
+          const SizedBox(height: 4),
+          Text(value, style: text.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: textColor)),
+        ],
       ),
     );
   }

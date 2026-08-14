@@ -219,4 +219,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String characterLoadError(String error) {
     return 'An error occurred: $error';
   }
+
+  @override
+  String get viewGuide => 'View guide';
+
+  @override
+  String get practiceWriting => 'Practice writing';
+
+  @override
+  String get submitReview => 'Submit';
+
+  @override
+  String get emptyStrokes => 'Please draw at least one stroke';
+
+  @override
+  String get evaluateTitle => 'Evaluate your drawing';
+
+  @override
+  String get evaluatePrompt => 'How would you grade your drawing (0-5)?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get submitting => 'Submitting...';
+
+  @override
+  String get submitSuccess => 'Submitted successfully!';
 }

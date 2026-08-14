@@ -511,6 +511,60 @@ abstract class AppLocalizations {
   /// In vi, this message translates to:
   /// **'Đã xảy ra lỗi: {error}'**
   String characterLoadError(String error);
+
+  /// No description provided for @viewGuide.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xem hướng dẫn'**
+  String get viewGuide;
+
+  /// No description provided for @practiceWriting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Luyện viết chữ'**
+  String get practiceWriting;
+
+  /// No description provided for @submitReview.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nộp bài'**
+  String get submitReview;
+
+  /// No description provided for @emptyStrokes.
+  ///
+  /// In vi, this message translates to:
+  /// **'Vui lòng vẽ ít nhất một nét'**
+  String get emptyStrokes;
+
+  /// No description provided for @evaluateTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đánh giá nét vẽ'**
+  String get evaluateTitle;
+
+  /// No description provided for @evaluatePrompt.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bạn tự đánh giá nét vẽ của mình được bao nhiêu điểm (0-5)?'**
+  String get evaluatePrompt;
+
+  /// No description provided for @cancel.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hủy'**
+  String get cancel;
+
+  /// No description provided for @submitting.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đang nộp bài...'**
+  String get submitting;
+
+  /// No description provided for @submitSuccess.
+  ///
+  /// In vi, this message translates to:
+  /// **'Nộp bài thành công!'**
+  String get submitSuccess;
 }
 
 class _AppLocalizationsDelegate

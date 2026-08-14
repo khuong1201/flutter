@@ -9,23 +9,23 @@ class StrokeDataModel extends StrokeDataEntity {
 
   factory StrokeDataModel.fromJson(Map<String, dynamic> json) {
     return StrokeDataModel(
-      order: json['order'] as int,
-      medianPath: json['median_path'] as String?,
-      outlinePath: json['outline_path'] as String,
+      order: json['order'] as int? ?? 0,
+      medianPath: json['medianPath'] as String?,
+      outlinePath: json['outlinePath'] as String,
     );
   }
 }
 
-class PronunciationModel extends PronunciationEntity {
-  const PronunciationModel({
-    required super.on,
-    required super.kun,
+class ReadingModel extends ReadingEntity {
+  const ReadingModel({
+    required super.reading,
+    required super.readingType,
   });
 
-  factory PronunciationModel.fromJson(Map<String, dynamic> json) {
-    return PronunciationModel(
-      on: (json['on'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
-      kun: (json['kun'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
+  factory ReadingModel.fromJson(Map<String, dynamic> json) {
+    return ReadingModel(
+      reading: json['reading'] as String,
+      readingType: json['readingType'] as String,
     );
   }
 }
@@ -66,9 +66,9 @@ class CharacterModel extends CharacterEntity {
     required super.charText,
     required super.language,
     required super.meaning,
-    super.pronunciation,
     super.audioKey,
-    required super.strokeData,
+    required super.readings,
+    required super.strokes,
     required super.radicals,
     required super.vocabularies,
   });
@@ -79,11 +79,12 @@ class CharacterModel extends CharacterEntity {
       charText: json['charText'] as String,
       language: json['language'] as String,
       meaning: json['meaning'] as String? ?? '',
-      pronunciation: json['pronunciation'] != null
-          ? PronunciationModel.fromJson(json['pronunciation'] as Map<String, dynamic>)
-          : null,
+      readings: (json['readings'] as List<dynamic>?)
+              ?.map((e) => ReadingModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       audioKey: json['audioKey'] as String?,
-      strokeData: (json['strokeData'] as List<dynamic>?)
+      strokes: (json['strokes'] as List<dynamic>?)
               ?.map((e) => StrokeDataModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],

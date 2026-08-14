@@ -44,13 +44,17 @@ class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> register(String email, String password, String fullName, String targetLanguage) async {
+  Future<void> register(String email, String password, String fullName) async {
     emit(AuthLoading());
-    final result = await registerUseCase(email, password, fullName, targetLanguage);
+    final result = await registerUseCase(email, password, fullName);
     
     result.fold(
       (failure) => emit(AuthError(failure)),
-      (_) => emit(AuthRegisterSuccess()),
+      (userToken) async {
+        await secureStorage.saveToken(userToken.token);
+        emit(AuthRegisterSuccess()); // Emit this for UI handling
+        emit(AuthAuthenticated(userToken.token)); // Then authenticate
+      }
     );
   }
 

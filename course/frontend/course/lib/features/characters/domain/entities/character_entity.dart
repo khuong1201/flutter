@@ -15,17 +15,17 @@ class StrokeDataEntity extends Equatable {
   List<Object?> get props => [order, medianPath, outlinePath];
 }
 
-class PronunciationEntity extends Equatable {
-  final List<String> on;
-  final List<String> kun;
+class ReadingEntity extends Equatable {
+  final String reading;
+  final String readingType; // e.g. onyomi, kunyomi, pinyin
 
-  const PronunciationEntity({
-    required this.on,
-    required this.kun,
+  const ReadingEntity({
+    required this.reading,
+    required this.readingType,
   });
 
   @override
-  List<Object?> get props => [on, kun];
+  List<Object?> get props => [reading, readingType];
 }
 
 class RadicalEntity extends Equatable {
@@ -61,9 +61,9 @@ class CharacterEntity extends Equatable {
   final String charText;
   final String language;
   final String meaning;
-  final PronunciationEntity? pronunciation;
+  final List<ReadingEntity> readings;
   final String? audioKey;
-  final List<StrokeDataEntity> strokeData;
+  final List<StrokeDataEntity> strokes;
   final List<RadicalEntity> radicals;
   final List<VocabularyEntity> vocabularies;
 
@@ -72,9 +72,9 @@ class CharacterEntity extends Equatable {
     required this.charText,
     required this.language,
     required this.meaning,
-    this.pronunciation,
+    required this.readings,
     this.audioKey,
-    required this.strokeData,
+    required this.strokes,
     required this.radicals,
     required this.vocabularies,
   });
@@ -85,9 +85,9 @@ class CharacterEntity extends Equatable {
         charText,
         language,
         meaning,
-        pronunciation,
+        readings,
         audioKey,
-        strokeData,
+        strokes,
         radicals,
         vocabularies,
       ];

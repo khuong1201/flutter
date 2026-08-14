@@ -220,4 +220,32 @@ class AppLocalizationsVi extends AppLocalizations {
   String characterLoadError(String error) {
     return 'Đã xảy ra lỗi: $error';
   }
+
+  @override
+  String get viewGuide => 'Xem hướng dẫn';
+
+  @override
+  String get practiceWriting => 'Luyện viết chữ';
+
+  @override
+  String get submitReview => 'Nộp bài';
+
+  @override
+  String get emptyStrokes => 'Vui lòng vẽ ít nhất một nét';
+
+  @override
+  String get evaluateTitle => 'Đánh giá nét vẽ';
+
+  @override
+  String get evaluatePrompt =>
+      'Bạn tự đánh giá nét vẽ của mình được bao nhiêu điểm (0-5)?';
+
+  @override
+  String get cancel => 'Hủy';
+
+  @override
+  String get submitting => 'Đang nộp bài...';
+
+  @override
+  String get submitSuccess => 'Nộp bài thành công!';
 }

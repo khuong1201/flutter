@@ -96,5 +96,15 @@
         "type": "String"
       }
     }
-  }
+  },
+
+  "viewGuide": "Xem hướng dẫn",
+  "practiceWriting": "Luyện viết chữ",
+  "submitReview": "Nộp bài",
+  "emptyStrokes": "Vui lòng vẽ ít nhất một nét",
+  "evaluateTitle": "Đánh giá nét vẽ",
+  "evaluatePrompt": "Bạn tự đánh giá nét vẽ của mình được bao nhiêu điểm (0-5)?",
+  "cancel": "Hủy",
+  "submitting": "Đang nộp bài...",
+  "submitSuccess": "Nộp bài thành công!"
 }

@@ -165,13 +165,11 @@ class _StrokeAnimationWidgetState extends State<StrokeAnimationWidget>
                 ),
               ),
             ),
-            
-            // Nút Play/Pause ở góc trái trên
             Positioned(
               left: 8,
               top: 8,
               child: FloatingActionButton.small(
-                heroTag: null, // Tránh lỗi trùng heroTag
+                heroTag: null,
                 elevation: 0,
                 backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
                 foregroundColor: Theme.of(context).colorScheme.primary,

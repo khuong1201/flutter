@@ -32,15 +32,14 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> register(String email, String password, String fullName, String targetLanguage) async {
+  Future<Either<Failure, UserTokenEntity>> register(String email, String password, String fullName) async {
     try {
-      await dio.post('/auth/register', data: {
+      final response = await dio.post('/auth/register', data: {
         'email': email,
         'password': password,
         'fullName': fullName,
-        'targetLanguage': targetLanguage,
       });
-      return const Right(null);
+      return Right(UserTokenModel.fromJson(response.data));
     } catch (e) {
       if (e is DioException) {
         final code = e.apiCode;
