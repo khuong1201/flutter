@@ -6,14 +6,10 @@ import redisConfig from './config/redis.config';
 import { PrismaModule } from './database/prisma.module';
 import { RedisModule } from './providers/redis/redis.module';
 import { HealthModule } from './modules/health/health.module';
-import { UsersModule } from './modules/users/users.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { CharactersModule } from './modules/characters/characters.module';
-import { LessonsModule } from './modules/lessons/lessons.module';
-import { ProgressModule } from './modules/progress/progress.module';
-import { PracticeModule } from './modules/practice/practice.module';
-import { LevelsModule } from './modules/levels/levels.module';
-import { ContributionsModule } from './modules/contributions/contributions.module';
+import { IamModule } from './modules/iam/iam.module';
+import { CurriculumModule } from './modules/curriculum/curriculum.module';
+import { LearningModule } from './modules/learning/learning.module';
+import { CommunityModule } from './modules/community/community.module';
 
 @Module({
   imports: [
@@ -24,14 +20,10 @@ import { ContributionsModule } from './modules/contributions/contributions.modul
     PrismaModule,
     RedisModule,
     HealthModule,
-    UsersModule,
-    AuthModule,
-    CharactersModule,
-    LessonsModule,
-    ProgressModule,
-    PracticeModule,
-    LevelsModule,
-    ContributionsModule,
+    IamModule,
+    CurriculumModule,
+    LearningModule,
+    CommunityModule,
   ],
   controllers: [],
   providers: [],

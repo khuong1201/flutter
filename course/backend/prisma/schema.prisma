@@ -15,6 +15,7 @@ model User {
   id             String    @id @default(uuid()) @db.Uuid
   email          String    @unique @db.VarChar(100)
   passwordHash   String?   @map("password_hash") @db.VarChar(255)
+  refreshToken   String?   @map("refresh_token") @db.Text
   provider       String?   @db.VarChar(50)
   providerId     String?   @map("provider_id") @db.VarChar(255)
   fullName       String    @map("full_name") @db.VarChar(100)
@@ -38,12 +39,14 @@ model User {
 
 model Level {
   id       Int    @id @default(autoincrement())
-  code     String @unique @db.VarChar(20)
+  system   String @db.VarChar(20)
+  code     String @db.VarChar(20)
   name     String @db.VarChar(50)
   language String @db.VarChar(10)
 
   lessons Lesson[]
 
+  @@unique([system, code])
   @@map("levels")
 }
 
@@ -53,11 +56,109 @@ model Lesson {
   title      String @db.VarChar(150)
   orderIndex Int    @map("order_index")
 
-  level       Level             @relation(fields: [levelId], references: [id])
-  characters  LessonCharacter[]
-  userLessons UserLesson[]
+  level        Level              @relation(fields: [levelId], references: [id])
+  vocabularies LessonVocabulary[]
+  userLessons  UserLesson[]
 
   @@map("lessons")
+}
+
+model LessonVocabulary {
+  lessonId     Int @map("lesson_id")
+  vocabularyId Int @map("vocabulary_id")
+  orderIndex   Int @map("order_index")
+
+  lesson     Lesson     @relation(fields: [lessonId], references: [id])
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id])
+
+  @@id([lessonId, vocabularyId])
+  @@map("lesson_vocabularies")
+}
+
+model Vocabulary {
+  id        Int      @id @default(autoincrement())
+  word      String   @db.VarChar(100)
+  meaning   String   @db.Text
+  language  String   @db.VarChar(10)
+  audioKey  String?  @map("audio_key") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  readings   VocabularyReading[]
+  characters VocabularyCharacter[]
+  lessons    LessonVocabulary[]
+
+  @@map("vocabularies")
+}
+
+model VocabularyReading {
+  id           Int     @id @default(autoincrement())
+  vocabularyId Int     @map("vocabulary_id")
+  reading      String  @db.VarChar(255)
+  pinyin       String? @db.VarChar(255)
+  kana         String? @db.VarChar(255)
+  romaji       String? @db.VarChar(255)
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id])
+
+  @@map("vocabulary_readings")
+}
+
+model VocabularyCharacter {
+  vocabularyId Int @map("vocabulary_id")
+  characterId  Int @map("character_id")
+  orderIndex   Int @map("order_index")
+
+  vocabulary Vocabulary @relation(fields: [vocabularyId], references: [id])
+  character  Character  @relation(fields: [characterId], references: [id])
+
+  @@id([vocabularyId, characterId])
+  @@map("vocabulary_characters")
+}
+
+model Character {
+  id       Int     @id @default(autoincrement())
+  charText String  @map("char_text") @db.VarChar(5)
+  language String  @db.VarChar(10)
+  meaning  String  @db.Text
+  audioKey String? @map("audio_key") @db.VarChar(255)
+
+  readings     CharacterReading[]
+  strokes      CharacterStroke[]
+  vocabularies VocabularyCharacter[]
+  radicals     CharacterRadical[]
+  progress     UserProgress[]
+  reviewLogs   ReviewLog[]
+
+  @@unique([charText, language])
+  @@map("characters")
+}
+
+model CharacterReading {
+  id          Int     @id @default(autoincrement())
+  characterId Int     @map("character_id")
+  reading     String  @db.VarChar(255)
+  pinyin      String? @db.VarChar(255)
+  kana        String? @db.VarChar(255)
+  romaji      String? @db.VarChar(255)
+  readingType String? @map("reading_type") @db.VarChar(50)
+
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@map("character_readings")
+}
+
+model CharacterStroke {
+  id          Int    @id @default(autoincrement())
+  characterId Int    @map("character_id")
+  order       Int
+  medianPath  String @map("median_path") @db.Text
+  outlinePath String @map("outline_path") @db.Text
+
+  character Character @relation(fields: [characterId], references: [id])
+
+  @@unique([characterId, order])
+  @@map("character_strokes")
 }
 
 model Radical {
@@ -71,25 +172,6 @@ model Radical {
   @@map("radicals")
 }
 
-model Character {
-  id            Int     @id @default(autoincrement())
-  charText      String  @map("char_text") @db.VarChar(5)
-  language      String  @db.VarChar(10)
-  meaning       String  @db.Text
-  pronunciation Json?
-  audioKey      String? @map("audio_key") @db.VarChar(255)
-  strokeData    Json    @map("stroke_data")
-
-  lessons      LessonCharacter[]
-  radicals     CharacterRadical[]
-  vocabularies Vocabulary[]
-  progress     UserProgress[]
-  reviewLogs   ReviewLog[]
-
-  @@unique([charText, language])
-  @@map("characters")
-}
-
 model CharacterRadical {
   characterId Int @map("character_id")
   radicalId   Int @map("radical_id")
@@ -99,30 +181,6 @@ model CharacterRadical {
 
   @@id([characterId, radicalId])
   @@map("character_radicals")
-}
-
-model LessonCharacter {
-  lessonId    Int @map("lesson_id")
-  characterId Int @map("character_id")
-  orderIndex  Int @map("order_index")
-
-  lesson    Lesson    @relation(fields: [lessonId], references: [id])
-  character Character @relation(fields: [characterId], references: [id])
-
-  @@id([lessonId, characterId])
-  @@map("lesson_characters")
-}
-
-model Vocabulary {
-  id            Int     @id @default(autoincrement())
-  characterId   Int     @map("character_id")
-  word          String  @db.VarChar(50)
-  meaning       String  @db.VarChar(255)
-  pronunciation String? @db.VarChar(100)
-
-  character Character @relation(fields: [characterId], references: [id])
-
-  @@map("vocabularies")
 }
 
 model UserProgress {
@@ -187,12 +245,15 @@ model UserContribution {
 }
 
 model DatasetVersion {
-  id         Int      @id @default(autoincrement())
-  source     String   @db.VarChar(50)
-  version    String   @db.VarChar(50)
-  status     String   @db.VarChar(20)
-  error      String?  @db.Text
-  importedAt DateTime @default(now()) @map("imported_at")
+  id          Int      @id @default(autoincrement())
+  source      String   @db.VarChar(50)
+  version     String   @db.VarChar(50)
+  status      String   @db.VarChar(20)
+  error       String?  @db.Text
+  datasetType String?  @map("dataset_type") @db.VarChar(50)
+  sourceUrl   String?  @map("source_url") @db.Text
+  recordCount Int?     @map("record_count")
+  importedAt  DateTime @default(now()) @map("imported_at")
 
   @@unique([source, version])
   @@map("dataset_versions")
