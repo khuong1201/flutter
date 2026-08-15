@@ -9,15 +9,16 @@ Zenith Lingua is a robust, cross-platform language learning application built wi
   - JWT Token management using `flutter_secure_storage`.
   - Automatic Dio interceptors for token injection and refresh.
 
-- **Interactive Character Learning**
+- **Interactive Character Learning & Practice**
   - Animated Chinese (Hanzi) and Japanese (Kanji) stroke drawing.
   - Step-by-step stroke breakdown, rendering SVG path data beautifully on a custom Grid (Tian Zi Ge).
   - Play, Pause, and Re-draw controls with slow-motion visualization for practicing calligraphy.
-  - Detailed vocabulary context, pronunciation (Onyomi/Kunyomi, Pinyin), and radicals breakdown.
+  - **AI-powered Handwriting Evaluation**: Practice drawing characters directly on the screen and submit to the backend for automatic scoring and personalized feedback.
+  - Detailed vocabulary context, readings (Onyomi/Kunyomi, Pinyin), and radicals breakdown.
 
-- **Daily Learning Tracker**
-  - A visual "Contribution Graph" tracking the user's daily study activity.
-  - Dynamic heat-map visualization inspired by GitHub's contribution chart.
+- **Progress & Statistics Tracker**
+  - A dynamic dashboard tracking the user's daily study activity.
+  - Visual metrics including Total Learned, Total Mastered, Accuracy Rate, Current Streak, and XP Points.
 
 - **Multi-language Support (i18n)**
   - Fully internationalized (English and Vietnamese).
@@ -35,8 +36,9 @@ lib/
 ├── core/                  # Core infrastructure (DI, Error Handling, Network, Storage, Themes)
 ├── features/              # Isolated feature modules
 │   ├── auth/              # Authentication & Token Management
-│   ├── characters/        # Kanji/Hanzi SVG Stroke animations
-│   ├── home/              # Dashboard & Contribution Graph
+│   ├── characters/        # Kanji/Hanzi SVG Stroke animations & Details
+│   ├── home/              # Dashboard & Progress Statistics
+│   ├── practice/          # Handwriting Evaluation & Practice Mode
 │   └── settings/          # Locale, Theme, and User Settings
 ├── l10n/                  # Localization (.arb files)
 └── routes/                # GoRouter navigation configuration
