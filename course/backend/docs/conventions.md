@@ -466,3 +466,5 @@ When generating code
 - Preserve architecture boundaries.
 - Generate tests whenever business logic changes.
 - Prefer consistency over personal preference.
+
+---

@@ -4,20 +4,25 @@ import { RecordContributionUseCase } from './application/use-cases/record-contri
 import { PrismaContributionRepository } from './infrastructure/persistence/prisma/prisma-contribution.repository';
 import { ContributionsController } from './presentation/controllers/contributions.controller';
 
+import { IamModule } from '../iam/iam.module';
+
 @Module({
-  imports: [],
+  imports: [IamModule],
   controllers: [
     ContributionsController
   ],
   providers: [
     GetContributionsUseCase,
     RecordContributionUseCase,
-    PrismaContributionRepository
+    {
+      provide: 'IContributionRepository',
+      useClass: PrismaContributionRepository
+    }
   ],
   exports: [
     GetContributionsUseCase,
     RecordContributionUseCase,
-    PrismaContributionRepository
+    'IContributionRepository'
   ]
 })
 export class CommunityModule {}

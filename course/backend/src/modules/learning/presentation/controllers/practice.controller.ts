@@ -78,11 +78,13 @@ export class PracticeController {
     schema: {
       properties: {
         score: { type: 'number' },
-        feedback: { type: 'string' }
+        feedback: { type: 'string' },
+        xpGained: { type: 'number' }
       }
     }
   })
-  async evaluateHandwriting(@Body() dto: EvaluateHandwritingDto) {
-    return this.evaluateHandwritingUseCase.execute(dto);
+  async evaluateHandwriting(@Request() req: any, @Body() dto: EvaluateHandwritingDto) {
+    const userId = req.user.id;
+    return this.evaluateHandwritingUseCase.execute(userId, dto);
   }
 }

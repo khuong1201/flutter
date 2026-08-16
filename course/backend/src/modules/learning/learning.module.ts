@@ -14,8 +14,10 @@ import { ProgressController } from './presentation/controllers/progress.controll
 import { PROGRESS_REPOSITORY } from './domain/repositories/progress.repository.interface';
 import { REVIEW_LOG_REPOSITORY } from './domain/repositories/review-log.repository.interface';
 
+import { IamModule } from '../iam/iam.module';
+
 @Module({
-  imports: [],
+  imports: [IamModule],
   controllers: [
     PracticeController,
     ProgressController

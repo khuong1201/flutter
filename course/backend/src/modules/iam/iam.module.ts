@@ -12,8 +12,15 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { UsersController } from './presentation/controllers/users.controller';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
 
+import { JwtModule } from '@nestjs/jwt';
+
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET || 'super-secret',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
   controllers: [
     AuthController,
     UsersController
@@ -41,7 +48,8 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
     SocialLoginUseCase,
     UpdateProfileUseCase,
     USER_REPOSITORY,
-    JwtAuthGuard
+    JwtAuthGuard,
+    JwtModule
   ]
 })
 export class IamModule {}

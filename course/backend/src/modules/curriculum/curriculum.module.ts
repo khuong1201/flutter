@@ -21,8 +21,15 @@ import { CHARACTER_REPOSITORY } from './domain/repositories/character.repository
 import { LESSON_REPOSITORY } from './domain/repositories/lesson.repository.interface';
 import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interface';
 
+import { CommunityModule } from '../community/community.module';
+
+import { AUDIO_PROVIDER } from './application/ports/audio-provider.interface';
+import { STORAGE_SERVICE } from './application/ports/storage-service.interface';
+
+import { IamModule } from '../iam/iam.module';
+
 @Module({
-  imports: [],
+  imports: [CommunityModule, IamModule],
   controllers: [
     CharactersController,
     LessonsController,
@@ -41,8 +48,8 @@ import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interfa
     { provide: CHARACTER_REPOSITORY, useClass: PrismaCharacterRepository },
     { provide: LESSON_REPOSITORY, useClass: PrismaLessonRepository },
     { provide: LEVEL_REPOSITORY, useClass: PrismaLevelRepository },
-    TtsAudioProvider,
-    LocalStorageService
+    { provide: AUDIO_PROVIDER, useClass: TtsAudioProvider },
+    { provide: STORAGE_SERVICE, useClass: LocalStorageService }
   ],
   exports: [
     CompleteLessonUseCase,
@@ -57,8 +64,8 @@ import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interfa
     CHARACTER_REPOSITORY,
     LESSON_REPOSITORY,
     LEVEL_REPOSITORY,
-    TtsAudioProvider,
-    LocalStorageService
+    AUDIO_PROVIDER,
+    STORAGE_SERVICE
   ]
 })
 export class CurriculumModule {}

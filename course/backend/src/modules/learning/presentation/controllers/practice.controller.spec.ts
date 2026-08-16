@@ -8,6 +8,8 @@ import { JwtAuthGuard } from '../../../iam/presentation/guards/jwt-auth.guard';
 
 import { GenerateQuizUseCase } from '../../application/use-cases/generate-quiz.use-case';
 
+import { EvaluateHandwritingUseCase } from '../../application/use-cases/evaluate-handwriting.use-case';
+
 describe('PracticeController', () => {
   let controller: PracticeController;
   let submitReviewUseCase: SubmitReviewResultUseCase;
@@ -17,6 +19,10 @@ describe('PracticeController', () => {
   };
 
   const mockGenerateQuizUseCase = {
+    execute: jest.fn(),
+  };
+
+  const mockEvaluateHandwritingUseCase = {
     execute: jest.fn(),
   };
 
@@ -31,6 +37,10 @@ describe('PracticeController', () => {
         {
           provide: GenerateQuizUseCase,
           useValue: mockGenerateQuizUseCase,
+        },
+        {
+          provide: EvaluateHandwritingUseCase,
+          useValue: mockEvaluateHandwritingUseCase,
         },
       ],
     })

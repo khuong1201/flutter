@@ -1,17 +1,25 @@
 # Tài liệu API & Luồng hoạt động (App Flow)
 
-Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng học tập và chi tiết các API Endpoint (bao gồm Request & Response) để đội ngũ Frontend dễ dàng tích hợp.
+Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng học tập và chi tiết các API Endpoint (bao gồm Request & Response) phản ánh chính xác cấu trúc Controller hiện tại trong Source Code.
 > **Lưu ý quan trọng:** Mọi API ngoại trừ Đăng nhập/Đăng ký đều yêu cầu Header `Authorization: Bearer <access_token>`.
 
 ---
 
 ## I. Luồng Hoạt Động Của Ứng Dụng (App Flow)
 
-1. **Khởi tạo và Đăng nhập (Auth):** User đăng nhập hoặc đăng ký để lấy `accessToken` và `refreshToken`.
-2. **Khám phá (Curriculum):** App gọi `/levels` -> `/levels/:id/lessons` -> `/lessons/:id/vocabularies` để hiển thị cây bài học và danh sách từ vựng/chữ Hán.
-3. **Luyện tập (Practice):** User luyện tập trắc nghiệm qua `/practice/quiz` hoặc luyện viết qua `/practice/evaluate-handwriting`.
-4. **Ôn tập (SRS):** Mỗi ngày User vào app, gọi `/progress/due-reviews` để lấy danh sách thẻ bài đến hạn ôn tập, sau đó trả kết quả về `/practice/review` để hệ thống tính toán chu kỳ lặp kế tiếp.
-5. **Cạnh tranh (Leaderboard):** User xem thông tin cá nhân (`/users/profile`) và đua top (`/users/leaderboard`).
+1. **Khởi tạo và Đăng nhập (Auth):** User đăng ký (`/auth/register`) hoặc đăng nhập (`/auth/login`, `/auth/social-login`) để lấy `accessToken` và `refreshToken`.
+2. **Khám phá (Curriculum):**
+   - Lấy danh sách các cấp độ ngôn ngữ (VD: N5, N4) qua `/levels` hoặc `/lessons/levels`.
+   - Xem lộ trình học tập cá nhân qua `/lessons/roadmap`.
+   - Chọn một cấp độ để xem các bài học `/levels/:id/lessons`.
+   - Xem danh sách chữ Hán/từ vựng trong bài học `/lessons/:id/characters`.
+   - Tra cứu từ điển chữ Hán `/characters` và chi tiết chữ Hán `/characters/:id`.
+3. **Luyện tập (Practice):** User luyện tập trắc nghiệm qua `/practice/quiz` hoặc luyện viết chữ Hán qua `/practice/evaluate-handwriting`. Khi hoàn thành một bài học, gọi `/lessons/:id/complete` để ghi nhận điểm kinh nghiệm (XP) và đóng góp (Contribution).
+4. **Ôn tập (SRS):** Mỗi ngày User mở ứng dụng, lấy danh sách thẻ bài đến hạn ôn tập bằng `/progress/due`, sau đó trả kết quả đánh giá (Grade từ 0-5) về `/practice/review` để thuật toán Spaced Repetition tính toán chu kỳ lặp kế tiếp.
+5. **Cộng đồng & Thi đua (Community & Leaderboard):** 
+   - Xem thống kê học tập (Accuracy, Streak) qua `/progress/stats`.
+   - Xem biểu đồ đóng góp (Heatmap Github-style) qua `/contributions`.
+   - Quản lý thông tin cá nhân (`/users/profile`) và đua top (`/users/leaderboard`).
 
 ---
 
@@ -37,7 +45,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ```
 
 #### `POST /auth/register`
-- **Desc:** Đăng ký tài khoản mới.
+- **Desc:** Đăng ký tài khoản mới (Không yêu cầu targetLanguage trong request).
 - **Req:**
 ```json
 {
@@ -89,7 +97,6 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 
 #### `GET /users/profile`
 - **Desc:** Lấy thông tin cá nhân hiện tại.
-- **Req:** *None*
 - **Res (200):**
 ```json
 {
@@ -121,7 +128,6 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 #### `GET /users/leaderboard`
 - **Desc:** Lấy bảng xếp hạng điểm XP.
 - **Query:** `?limit=10`
-- **Req:** *None*
 - **Res (200):**
 ```json
 [
@@ -130,23 +136,16 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
     "fullName": "Nguyen Van A",
     "xpPoints": 5000,
     "avatarUrl": "https://..."
-  },
-  {
-    "id": "uuid2",
-    "fullName": "Le Thi B",
-    "xpPoints": 4500,
-    "avatarUrl": "https://..."
   }
 ]
 ```
 
 ---
 
-### 2. Curriculum (Chương trình học Read-only)
+### 2. Curriculum (Giáo trình & Bài học)
 
 #### `GET /levels`
-- **Desc:** Lấy danh sách các cấp độ (HSK 1-9, JLPT N5-N1).
-- **Req:** *None*
+- **Desc:** Lấy danh sách toàn bộ các cấp độ (VD: N5, N4).
 - **Res (200):**
 ```json
 [
@@ -162,7 +161,6 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 
 #### `GET /levels/:id/lessons`
 - **Desc:** Lấy danh sách bài học thuộc một cấp độ cụ thể.
-- **Req:** *None*
 - **Res (200):**
 ```json
 [
@@ -175,35 +173,58 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ]
 ```
 
-#### `GET /lessons/:id/vocabularies`
-- **Desc:** Lấy toàn bộ danh sách từ vựng, âm đọc, và các chữ Hán cấu thành.
-- **Req:** *None*
+#### `GET /lessons/roadmap`
+- **Desc:** Lấy lộ trình học tập của user, gom nhóm theo từng cấp độ và bao gồm trạng thái bài học.
 - **Res (200):**
 ```json
 [
   {
-    "id": 1001,
-    "word": "こんにちは",
-    "meaning": "Xin chào",
-    "language": "ja",
-    "readings": [
-      { "reading": "こんにちは", "romaji": "konnichiwa" }
-    ],
-    "characters": [
+    "levelId": 1,
+    "levelName": "JLPT N5",
+    "lessons": [
       {
-        "id": 501,
-        "charText": "今",
-        "meaning": "Hiện tại",
-        "orderIndex": 1
+        "id": 101,
+        "title": "Lesson 1",
+        "status": "completed"
       }
     ]
   }
 ]
 ```
 
+#### `GET /lessons/:id/characters`
+- **Desc:** Lấy danh sách các chữ Hán có trong một bài học.
+- **Res (200):**
+```json
+[
+  {
+    "id": 501,
+    "charText": "今",
+    "language": "ja",
+    "meaning": "Hiện tại",
+    "audioKey": "audio/ima.mp3",
+    "pronunciation": "いま"
+  }
+]
+```
+
+#### `POST /lessons/:id/complete`
+- **Desc:** Đánh dấu một bài học là đã hoàn thành. Hệ thống sẽ cấp điểm XP và ghi nhận một Contribution vào lịch sử học tập trong ngày.
+- **Res (201):**
+```json
+{
+  "success": true
+}
+```
+
+#### `GET /characters`
+- **Desc:** Tìm kiếm chữ Hán.
+- **Query:** `?q=hello&limit=10`
+- **Res (200):**
+*(Trả về mảng Object Character thu gọn)*
+
 #### `GET /characters/:id`
-- **Desc:** Xem chi tiết 1 chữ Hán.
-- **Req:** *None*
+- **Desc:** Xem chi tiết 1 chữ Hán, bao gồm âm đọc, bộ thủ và danh sách nét (strokes).
 - **Res (200):**
 ```json
 {
@@ -225,20 +246,16 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 }
 ```
 
-#### `GET /characters/search`
-- **Desc:** Tìm kiếm chữ Hán.
-- **Query:** `?q=hello`
-- **Req:** *None*
-- **Res (200):**
-*(Trả về mảng Object Character tương tự API chi tiết ở trên nhưng rút gọn)*
+#### `GET /characters/:id/audio`
+- **Desc:** Lấy audio đọc chữ Hán. Hệ thống sử dụng TTS nếu chưa có audio cache sẵn trong Storage.
+- **Res (200):** *(Trả về file âm thanh stream/binary)*
 
 ---
 
-### 3. Learning & Practice (Học tập & SRS)
+### 3. Learning & Progress (Ôn tập & Đánh giá)
 
-#### `GET /progress/due-reviews`
-- **Desc:** Lấy danh sách các Chữ Hán/Từ vựng đến hạn phải ôn tập trong ngày hôm nay theo thuật toán SRS.
-- **Req:** *None*
+#### `GET /progress/due`
+- **Desc:** Lấy danh sách các chữ Hán đến hạn ôn tập trong ngày hôm nay theo thuật toán SRS.
 - **Res (200):**
 ```json
 [
@@ -257,8 +274,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ```
 
 #### `GET /progress/stats`
-- **Desc:** Xem các thống kê học tập cá nhân.
-- **Req:** *None*
+- **Desc:** Xem các thống kê học tập (dành cho màn Profile).
 - **Res (200):**
 ```json
 {
@@ -271,9 +287,8 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ```
 
 #### `GET /practice/quiz`
-- **Desc:** Sinh một bài trắc nghiệm ngẫu nhiên.
+- **Desc:** Sinh bài tập trắc nghiệm ngẫu nhiên từ bài học.
 - **Query:** `?lessonId=1&limit=10`
-- **Req:** *None*
 - **Res (200):**
 ```json
 [
@@ -288,7 +303,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ```
 
 #### `POST /practice/review`
-- **Desc:** Gửi kết quả chấm điểm ôn tập để hệ thống cập nhật thẻ ghi nhớ SRS.
+- **Desc:** Gửi điểm đánh giá (Grade) của thẻ bài để hệ thống SRS tính toán chu kỳ lặp (interval) kế tiếp.
 - **Req:**
 ```json
 {
@@ -305,7 +320,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 ```
 
 #### `POST /practice/evaluate-handwriting`
-- **Desc:** Chấm điểm độ chính xác nét vẽ do người dùng viết tay so với nét chuẩn.
+- **Desc:** Chấm điểm độ chính xác nét vẽ Hán tự viết tay của người dùng so với nét chuẩn.
 - **Req:** 
 ```json
 {
@@ -316,10 +331,31 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
   ]
 }
 ```
-- **Res (200):**
+- **Res (201):**
 ```json
 {
   "score": 85,
   "feedback": "Good, but could be more accurate."
 }
+```
+
+---
+
+### 4. Community (Cộng đồng)
+
+#### `GET /contributions`
+- **Desc:** Lấy biểu đồ đóng góp (Contribution Heatmap) tương tự Github.
+- **Query:** `?year=2026` (Tùy chọn)
+- **Res (200):**
+```json
+[
+  {
+    "date": "2026-08-14",
+    "count": 5
+  },
+  {
+    "date": "2026-08-15",
+    "count": 2
+  }
+]
 ```
