@@ -17,6 +17,10 @@ import { CharactersController } from './presentation/controllers/characters.cont
 import { LessonsController } from './presentation/controllers/lessons.controller';
 import { LevelsController } from './presentation/controllers/levels.controller';
 
+import { CHARACTER_REPOSITORY } from './domain/repositories/character.repository.interface';
+import { LESSON_REPOSITORY } from './domain/repositories/lesson.repository.interface';
+import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interface';
+
 @Module({
   imports: [],
   controllers: [
@@ -34,9 +38,9 @@ import { LevelsController } from './presentation/controllers/levels.controller';
     GetLevelsUseCase,
     GetRoadmapUseCase,
     SearchCharactersUseCase,
-    PrismaCharacterRepository,
-    PrismaLessonRepository,
-    PrismaLevelRepository,
+    { provide: CHARACTER_REPOSITORY, useClass: PrismaCharacterRepository },
+    { provide: LESSON_REPOSITORY, useClass: PrismaLessonRepository },
+    { provide: LEVEL_REPOSITORY, useClass: PrismaLevelRepository },
     TtsAudioProvider,
     LocalStorageService
   ],
@@ -50,9 +54,9 @@ import { LevelsController } from './presentation/controllers/levels.controller';
     GetLevelsUseCase,
     GetRoadmapUseCase,
     SearchCharactersUseCase,
-    PrismaCharacterRepository,
-    PrismaLessonRepository,
-    PrismaLevelRepository,
+    CHARACTER_REPOSITORY,
+    LESSON_REPOSITORY,
+    LEVEL_REPOSITORY,
     TtsAudioProvider,
     LocalStorageService
   ]

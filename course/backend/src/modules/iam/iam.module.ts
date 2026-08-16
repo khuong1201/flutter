@@ -7,6 +7,7 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { SocialLoginUseCase } from './application/use-cases/social-login.use-case';
 import { UpdateProfileUseCase } from './application/use-cases/update-profile.use-case';
 import { PrismaUserRepository } from './infrastructure/persistence/prisma/prisma-user.repository';
+import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { UsersController } from './presentation/controllers/users.controller';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
@@ -25,7 +26,10 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
     RegisterUseCase,
     SocialLoginUseCase,
     UpdateProfileUseCase,
-    PrismaUserRepository,
+    {
+      provide: USER_REPOSITORY,
+      useClass: PrismaUserRepository
+    },
     JwtAuthGuard
   ],
   exports: [
@@ -36,7 +40,7 @@ import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
     RegisterUseCase,
     SocialLoginUseCase,
     UpdateProfileUseCase,
-    PrismaUserRepository,
+    USER_REPOSITORY,
     JwtAuthGuard
   ]
 })

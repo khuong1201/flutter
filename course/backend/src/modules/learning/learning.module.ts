@@ -11,6 +11,9 @@ import { PrismaReviewLogRepository } from './infrastructure/persistence/prisma/p
 import { PracticeController } from './presentation/controllers/practice.controller';
 import { ProgressController } from './presentation/controllers/progress.controller';
 
+import { PROGRESS_REPOSITORY } from './domain/repositories/progress.repository.interface';
+import { REVIEW_LOG_REPOSITORY } from './domain/repositories/review-log.repository.interface';
+
 @Module({
   imports: [],
   controllers: [
@@ -25,8 +28,8 @@ import { ProgressController } from './presentation/controllers/progress.controll
     UpdateProgressUseCase,
     EvaluateHandwritingUseCase,
     HandwritingEvaluationService,
-    PrismaProgressRepository,
-    PrismaReviewLogRepository
+    { provide: PROGRESS_REPOSITORY, useClass: PrismaProgressRepository },
+    { provide: REVIEW_LOG_REPOSITORY, useClass: PrismaReviewLogRepository }
   ],
   exports: [
     GenerateQuizUseCase,
@@ -34,8 +37,8 @@ import { ProgressController } from './presentation/controllers/progress.controll
     GetProgressStatsUseCase,
     SubmitReviewResultUseCase,
     UpdateProgressUseCase,
-    PrismaProgressRepository,
-    PrismaReviewLogRepository
+    PROGRESS_REPOSITORY,
+    REVIEW_LOG_REPOSITORY
   ]
 })
 export class LearningModule {}
