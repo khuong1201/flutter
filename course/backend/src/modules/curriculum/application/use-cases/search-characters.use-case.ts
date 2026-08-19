@@ -10,10 +10,10 @@ export class SearchCharactersUseCase {
     private readonly characterRepository: ICharacterRepository,
   ) {}
 
-  async execute(query: string, limit: number = 10): Promise<Character[]> {
+  async execute(query: string, limit: number = 10, lang?: string): Promise<Character[]> {
     if (!query || query.trim().length === 0) {
-      return this.characterRepository.findAll(limit, 0);
+      return this.characterRepository.findAll(limit, 0, lang);
     }
-    return this.characterRepository.search(query.trim(), limit);
+    return this.characterRepository.search(query.trim(), limit, lang);
   }
 }

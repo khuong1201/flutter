@@ -30,9 +30,9 @@ export class GetCharacterDetailsUseCase {
         meaning: r.meaning,
       })),
       vocabularies: character.vocabularies?.map((v) => ({
-        word: v.vocabulary?.word || v.word || '',
-        meaning: v.vocabulary?.meaning || v.meaning || '',
-        pronunciation: v.vocabulary?.readings?.[0]?.reading || v.pronunciation || '',
+        word: v.word || '',
+        meaning: v.meaning || '',
+        pronunciation: v.pronunciation || '',
       })),
     };
   }

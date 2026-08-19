@@ -244,8 +244,35 @@ class AppLocalizationsVi extends AppLocalizations {
   String get cancel => 'Hủy';
 
   @override
-  String get submitting => 'Đang nộp bài...';
+  String get submitting => 'Đang gửi...';
 
   @override
-  String get submitSuccess => 'Nộp bài thành công!';
+  String get submitSuccess => 'Gửi thành công!';
+
+  @override
+  String get profileTitle => 'Hồ sơ cá nhân';
+
+  @override
+  String get homeUserNamePlaceholder => 'Zenith Learner!';
+
+  @override
+  String get homeStatsLoadError => 'Không thể tải dữ liệu thống kê';
+
+  @override
+  String get drawingToggleHint => 'Bật/tắt nét mờ';
+
+  @override
+  String get drawingUndo => 'Hoàn tác';
+
+  @override
+  String get drawingClearAll => 'Xóa toàn bộ';
+
+  @override
+  String get evaluationResultTitle => 'Kết quả chấm điểm';
+
+  @override
+  String get close => 'Đóng';
+
+  @override
+  String get missingStrokeData => 'Thiếu dữ liệu nét chữ';
 }

@@ -1,4 +1,4 @@
-import 'package:course/features/home/domain/entities/progress_stats_entity.dart';
+import 'package:course/features/profile/domain/entities/progress_stats_entity.dart';
 
 class ProgressStatsModel extends ProgressStatsEntity {
   const ProgressStatsModel({

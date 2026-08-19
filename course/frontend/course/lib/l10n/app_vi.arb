@@ -105,6 +105,15 @@
   "evaluateTitle": "Đánh giá nét vẽ",
   "evaluatePrompt": "Bạn tự đánh giá nét vẽ của mình được bao nhiêu điểm (0-5)?",
   "cancel": "Hủy",
-  "submitting": "Đang nộp bài...",
-  "submitSuccess": "Nộp bài thành công!"
+  "submitting": "Đang gửi...",
+  "submitSuccess": "Gửi thành công!",
+  "profileTitle": "Hồ sơ cá nhân",
+  "homeUserNamePlaceholder": "Zenith Learner!",
+  "homeStatsLoadError": "Không thể tải dữ liệu thống kê",
+  "drawingToggleHint": "Bật/tắt nét mờ",
+  "drawingUndo": "Hoàn tác",
+  "drawingClearAll": "Xóa toàn bộ",
+  "evaluationResultTitle": "Kết quả chấm điểm",
+  "close": "Đóng",
+  "missingStrokeData": "Thiếu dữ liệu nét chữ"
 }

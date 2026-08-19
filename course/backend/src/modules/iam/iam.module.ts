@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
-import { GetLeaderboardUseCase } from './application/use-cases/get-leaderboard.use-case';
-import { GetUserProfileUseCase } from './application/use-cases/get-user-profile.use-case';
-import { LoginUseCase } from './application/use-cases/login.use-case';
-import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
+import { JwtModule } from '@nestjs/jwt';
 import { RegisterUseCase } from './application/use-cases/register.use-case';
+import { LoginUseCase } from './application/use-cases/login.use-case';
 import { SocialLoginUseCase } from './application/use-cases/social-login.use-case';
+import { RefreshTokenUseCase } from './application/use-cases/refresh-token.use-case';
+import { GetUserProfileUseCase } from './application/use-cases/get-user-profile.use-case';
 import { UpdateProfileUseCase } from './application/use-cases/update-profile.use-case';
-import { PrismaUserRepository } from './infrastructure/persistence/prisma/prisma-user.repository';
-import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
+import { GetLeaderboardUseCase } from './application/use-cases/get-leaderboard.use-case';
+import { DeleteAccountUseCase } from './application/use-cases/delete-account.use-case';
 import { AuthController } from './presentation/controllers/auth.controller';
 import { UsersController } from './presentation/controllers/users.controller';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
-
-import { JwtModule } from '@nestjs/jwt';
+import { PrismaUserRepository } from './infrastructure/persistence/prisma/prisma-user.repository';
+import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
 
 @Module({
   imports: [
@@ -33,6 +33,7 @@ import { JwtModule } from '@nestjs/jwt';
     RegisterUseCase,
     SocialLoginUseCase,
     UpdateProfileUseCase,
+    DeleteAccountUseCase,
     {
       provide: USER_REPOSITORY,
       useClass: PrismaUserRepository
@@ -47,6 +48,7 @@ import { JwtModule } from '@nestjs/jwt';
     RegisterUseCase,
     SocialLoginUseCase,
     UpdateProfileUseCase,
+    DeleteAccountUseCase,
     USER_REPOSITORY,
     JwtAuthGuard,
     JwtModule

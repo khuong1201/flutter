@@ -557,14 +557,68 @@ abstract class AppLocalizations {
   /// No description provided for @submitting.
   ///
   /// In vi, this message translates to:
-  /// **'Đang nộp bài...'**
+  /// **'Đang gửi...'**
   String get submitting;
 
   /// No description provided for @submitSuccess.
   ///
   /// In vi, this message translates to:
-  /// **'Nộp bài thành công!'**
+  /// **'Gửi thành công!'**
   String get submitSuccess;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hồ sơ cá nhân'**
+  String get profileTitle;
+
+  /// No description provided for @homeUserNamePlaceholder.
+  ///
+  /// In vi, this message translates to:
+  /// **'Zenith Learner!'**
+  String get homeUserNamePlaceholder;
+
+  /// No description provided for @homeStatsLoadError.
+  ///
+  /// In vi, this message translates to:
+  /// **'Không thể tải dữ liệu thống kê'**
+  String get homeStatsLoadError;
+
+  /// No description provided for @drawingToggleHint.
+  ///
+  /// In vi, this message translates to:
+  /// **'Bật/tắt nét mờ'**
+  String get drawingToggleHint;
+
+  /// No description provided for @drawingUndo.
+  ///
+  /// In vi, this message translates to:
+  /// **'Hoàn tác'**
+  String get drawingUndo;
+
+  /// No description provided for @drawingClearAll.
+  ///
+  /// In vi, this message translates to:
+  /// **'Xóa toàn bộ'**
+  String get drawingClearAll;
+
+  /// No description provided for @evaluationResultTitle.
+  ///
+  /// In vi, this message translates to:
+  /// **'Kết quả chấm điểm'**
+  String get evaluationResultTitle;
+
+  /// No description provided for @close.
+  ///
+  /// In vi, this message translates to:
+  /// **'Đóng'**
+  String get close;
+
+  /// No description provided for @missingStrokeData.
+  ///
+  /// In vi, this message translates to:
+  /// **'Thiếu dữ liệu nét chữ'**
+  String get missingStrokeData;
 }
 
 class _AppLocalizationsDelegate

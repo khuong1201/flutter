@@ -46,14 +46,22 @@ export class CharactersController {
     type: Number,
     description: 'Limit results',
   })
+  @ApiQuery({
+    name: 'lang',
+    required: false,
+    type: String,
+    description: 'Filter by language (e.g. ja or zh)',
+  })
   @ApiResponse({ status: 200, description: 'Characters matching search query', type: [CharacterResponseDto] })
   async searchCharacters(
     @Query('q') query: string,
     @Query('limit') limit: number = 10,
+    @Query('lang') lang?: string,
   ): Promise<CharacterResponseDto[]> {
     return this.searchCharactersUseCase.execute(
       query || '',
       Number(limit) || 10,
+      lang,
     ) as any;
   }
 

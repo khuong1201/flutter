@@ -1,24 +1,25 @@
-import 'package:course/features/home/domain/usecases/get_progress_stats_usecase.dart';
 import 'package:course/core/error/failures.dart';
-import 'package:course/features/home/domain/entities/progress_stats_entity.dart';
+import 'package:course/features/home/domain/entities/contribution_entity.dart';
+import 'package:course/features/home/domain/usecases/get_contributions_usecase.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  final GetProgressStatsUseCase getProgressStatsUseCase;
+  final GetContributionsUseCase getContributionsUseCase;
 
   HomeCubit({
-    required this.getProgressStatsUseCase,
+    required this.getContributionsUseCase,
   }) : super(HomeInitial());
 
   Future<void> loadData() async {
     emit(HomeLoading());
-    
-    final result = await getProgressStatsUseCase();
-    
+
+    final year = DateTime.now().year;
+    final result = await getContributionsUseCase(year);
+
     result.fold(
       (failure) => emit(HomeError(failure)),
-      (stats) => emit(HomeLoaded(stats)),
+      (contributions) => emit(HomeLoaded(contributions)),
     );
   }
 }
@@ -35,12 +36,12 @@ class HomeInitial extends HomeState {}
 class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {
-  final ProgressStatsEntity stats;
+  final List<ContributionEntity> contributions;
 
-  const HomeLoaded(this.stats);
+  const HomeLoaded(this.contributions);
 
   @override
-  List<Object> get props => [stats];
+  List<Object> get props => [contributions];
 }
 
 class HomeError extends HomeState {

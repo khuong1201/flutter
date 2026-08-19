@@ -11,10 +11,12 @@ import 'package:course/core/utils/l10n_extension.dart';
 
 class CharacterPage extends StatelessWidget {
   final int characterId;
+  final dynamic initialData;
 
   const CharacterPage({
     super.key,
     required this.characterId,
+    this.initialData,
   });
 
   @override
@@ -22,7 +24,7 @@ class CharacterPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.I<CharacterCubit>()..loadCharacter(characterId),
+          create: (context) => GetIt.I<CharacterCubit>()..loadCharacter(characterId, initialData: initialData),
         ),
         BlocProvider(
           create: (context) => GetIt.I<PracticeCubit>(),
@@ -42,6 +44,7 @@ class _CharacterPageView extends StatefulWidget {
 
 class _CharacterPageViewState extends State<_CharacterPageView> {
   bool _isPracticeMode = false;
+  bool _isDrawing = false;
   List<List<Offset>> _currentStrokes = [];
 
   @override
@@ -60,7 +63,7 @@ class _CharacterPageViewState extends State<_CharacterPageView> {
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-              title: const Text('Kết quả chấm điểm'),
+              title: Text(context.l10n.evaluationResultTitle),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -83,7 +86,7 @@ class _CharacterPageViewState extends State<_CharacterPageView> {
                       _isPracticeMode = false;
                     });
                   },
-                  child: const Text('Đóng'),
+                  child: Text(context.l10n.close),
                 )
               ],
             )
@@ -119,6 +122,7 @@ class _CharacterPageViewState extends State<_CharacterPageView> {
             final char = state.character;
             
             return SingleChildScrollView(
+              physics: _isDrawing ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
               padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -152,10 +156,30 @@ class _CharacterPageViewState extends State<_CharacterPageView> {
                   
                   // Animation Widget hoặc Drawing Board
                   Center(
-                    child: _isPracticeMode
+                    child: char.strokes.isEmpty 
+                      ? Container(
+                          width: MediaQuery.sizeOf(context).width - 32,
+                          height: MediaQuery.sizeOf(context).width - 32,
+                          decoration: BoxDecoration(
+                            color: colors.surfaceContainerHighest.withValues(alpha: 0.3),
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: colors.outlineVariant),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            context.l10n.missingStrokeData,
+                            style: text.bodyLarge?.copyWith(color: colors.onSurfaceVariant),
+                          ),
+                        )
+                      : _isPracticeMode
                         ? DrawingBoardWidget(
                             outlinePaths: char.strokes.map((e) => parseSvgPathData(e.outlinePath)).toList(),
                             size: MediaQuery.sizeOf(context).width - 32,
+                            onDrawing: (isDrawing) {
+                              setState(() {
+                                _isDrawing = isDrawing;
+                              });
+                            },
                             onStrokesUpdated: (strokes) {
                               _currentStrokes = strokes;
                             },
@@ -165,6 +189,7 @@ class _CharacterPageViewState extends State<_CharacterPageView> {
                             size: MediaQuery.sizeOf(context).width - 32,
                             strokeColor: colors.primary,
                             outlineColor: colors.onSurfaceVariant,
+                            animationSpeedMultiplier: 1.5,
                           ),
                   ),
                   

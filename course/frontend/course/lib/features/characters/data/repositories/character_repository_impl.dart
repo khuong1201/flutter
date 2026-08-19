@@ -9,13 +9,29 @@ import 'package:dio/dio.dart';
 class CharacterRepositoryImpl implements CharacterRepository {
   final CharacterRemoteDataSource remoteDataSource;
 
+  final Map<int, CharacterEntity> _cachedCharacters = {};
+
   CharacterRepositoryImpl({required this.remoteDataSource});
 
   @override
   Future<Either<Failure, CharacterEntity>> getCharacter(int id) async {
+    if (_cachedCharacters.containsKey(id)) return Right(_cachedCharacters[id]!);
     try {
       final character = await remoteDataSource.getCharacter(id);
+      _cachedCharacters[id] = character;
       return Right(character);
+    } on DioException catch (e) {
+      return Left(ServerFailure(e.apiCode ?? 'errorUnknown'));
+    } catch (e) {
+      return Left(ServerFailure('errorUnknown'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<CharacterEntity>>> searchCharacters({String? q, int? limit, String? lang}) async {
+    try {
+      final characters = await remoteDataSource.searchCharacters(q: q, limit: limit, lang: lang);
+      return Right(characters);
     } on DioException catch (e) {
       return Left(ServerFailure(e.apiCode ?? 'errorUnknown'));
     } catch (e) {

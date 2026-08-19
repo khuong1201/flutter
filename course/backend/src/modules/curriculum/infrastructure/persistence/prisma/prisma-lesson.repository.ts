@@ -43,7 +43,17 @@ export class PrismaLessonRepository implements ILessonRepository {
       include: {
         vocabulary: {
           include: {
-            characters: { include: { character: true }, orderBy: { orderIndex: 'asc' } }
+            characters: { 
+              include: { 
+                character: {
+                  include: {
+                    strokes: true,
+                    readings: true
+                  }
+                } 
+              }, 
+              orderBy: { orderIndex: 'asc' } 
+            }
           }
         }
       },

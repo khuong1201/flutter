@@ -15,6 +15,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { GetUserProfileUseCase } from '../../application/use-cases/get-user-profile.use-case';
+import { DeleteAccountUseCase } from '../../application/use-cases/delete-account.use-case';
 import {
   UpdateProfileUseCase,
   UpdateProfileDto,
@@ -22,6 +23,7 @@ import {
 import { GetLeaderboardUseCase } from '../../application/use-cases/get-leaderboard.use-case';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { UserResponseDto } from '../../application/dto/user-response.dto';
+import { Delete } from '@nestjs/common';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -31,6 +33,7 @@ export class UsersController {
     private readonly getUserProfileUseCase: GetUserProfileUseCase,
     private readonly updateProfileUseCase: UpdateProfileUseCase,
     private readonly getLeaderboardUseCase: GetLeaderboardUseCase,
+    private readonly deleteAccountUseCase: DeleteAccountUseCase,
   ) {}
 
   @Get('profile')
@@ -62,6 +65,16 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Leaderboard retrieved successfully', type: [UserResponseDto] })
   async getLeaderboard(@Query('limit') limit: number = 10): Promise<UserResponseDto[]> {
     return this.getLeaderboardUseCase.execute(Number(limit) || 10);
+  }
+
+  @Delete('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete current user account and all related data' })
+  @ApiResponse({ status: 200, description: 'Account deleted successfully' })
+  async deleteAccount(@Request() req: any): Promise<{ success: boolean }> {
+    const userId = req.user.id;
+    await this.deleteAccountUseCase.execute(userId);
+    return { success: true };
   }
 }
 

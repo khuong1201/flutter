@@ -38,11 +38,35 @@ class CharacterCubit extends Cubit<CharacterState> {
 
   CharacterCubit({required this.getCharacterUseCase}) : super(CharacterInitial());
 
-  Future<void> loadCharacter(int id) async {
-    emit(CharacterLoading());
+  Future<void> loadCharacter(int id, {dynamic initialData}) async {
+    if (initialData != null) {
+      try {
+        final partialCharacter = CharacterEntity(
+          id: initialData.id,
+          charText: initialData.charText,
+          language: initialData.language,
+          meaning: initialData.meaning,
+          audioKey: initialData.audioKey,
+          strokes: initialData.strokeData ?? [],
+          radicals: const [],
+          readings: const [],
+          vocabularies: const [],
+        );
+        emit(CharacterLoaded(partialCharacter));
+      } catch (_) {
+        emit(CharacterLoading());
+      }
+    } else {
+      emit(CharacterLoading());
+    }
+
     final result = await getCharacterUseCase(id);
     result.fold(
-      (failure) => emit(CharacterError(failure)),
+      (failure) {
+        if (initialData == null) {
+          emit(CharacterError(failure));
+        }
+      },
       (character) => emit(CharacterLoaded(character)),
     );
   }

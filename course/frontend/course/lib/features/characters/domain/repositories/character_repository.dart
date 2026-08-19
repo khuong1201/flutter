@@ -4,4 +4,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class CharacterRepository {
   Future<Either<Failure, CharacterEntity>> getCharacter(int id);
+  Future<Either<Failure, List<CharacterEntity>>> searchCharacters({String? q, int? limit, String? lang});
 }

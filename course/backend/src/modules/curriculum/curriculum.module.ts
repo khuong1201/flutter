@@ -22,6 +22,7 @@ import { LESSON_REPOSITORY } from './domain/repositories/lesson.repository.inter
 import { LEVEL_REPOSITORY } from './domain/repositories/level.repository.interface';
 
 import { CommunityModule } from '../community/community.module';
+import { LearningModule } from '../learning/learning.module';
 
 import { AUDIO_PROVIDER } from './application/ports/audio-provider.interface';
 import { STORAGE_SERVICE } from './application/ports/storage-service.interface';
@@ -29,7 +30,7 @@ import { STORAGE_SERVICE } from './application/ports/storage-service.interface';
 import { IamModule } from '../iam/iam.module';
 
 @Module({
-  imports: [CommunityModule, IamModule],
+  imports: [CommunityModule, IamModule, LearningModule],
   controllers: [
     CharactersController,
     LessonsController,

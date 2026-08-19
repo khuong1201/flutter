@@ -17,8 +17,8 @@ export class GetLessonCharactersUseCase {
       charText: c.charText,
       language: c.language,
       meaning: c.meaning,
-      strokeData: c.strokeData,
-      pronunciation: c.pronunciation,
+      strokeData: c.strokes || [],
+      pronunciation: c.readings?.[0]?.reading || null,
       audioKey: c.audioKey,
     }));
   }

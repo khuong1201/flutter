@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Param, Post, UseGuards, Request, Query, ParseIntPipe } from '@nestjs/common';
 import {
   ApiTags,
   ApiOperation,
@@ -11,7 +11,7 @@ import { GetRoadmapUseCase } from '../../application/use-cases/get-roadmap.use-c
 import { GetLessonCharactersUseCase } from '../../application/use-cases/get-lesson-characters.use-case';
 import { CompleteLessonUseCase } from '../../application/use-cases/complete-lesson.use-case';
 import { JwtAuthGuard } from '../../../iam/presentation/guards/jwt-auth.guard';
-import { Param, ParseIntPipe, Post } from '@nestjs/common';
+
 import { LevelDto } from '../../application/dto/level.dto';
 import { LessonDto, RoadmapLevelDto } from '../../application/dto/lesson.dto';
 import { CharacterResponseDto } from '../../application/dto/character-response.dto';
@@ -39,8 +39,11 @@ export class LessonsController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Get learning roadmap with user progress' })
   @ApiResponse({ status: 200, description: 'User roadmap grouped by levels', type: [RoadmapLevelDto] })
-  async getRoadmap(@Request() req: any): Promise<RoadmapLevelDto[]> {
-    return this.getRoadmapUseCase.execute(req.user.id) as any;
+  async getRoadmap(
+    @Request() req: any,
+    @Query('lang') lang?: string,
+  ): Promise<RoadmapLevelDto[]> {
+    return this.getRoadmapUseCase.execute(req.user.id, lang) as any;
   }
 
   @Get(':id/characters')

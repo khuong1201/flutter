@@ -4,6 +4,8 @@ import 'package:course/core/utils/theme_cubit.dart';
 import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:course/features/profile/domain/repositories/profile_repository.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -115,8 +117,80 @@ class SettingsPage extends StatelessWidget {
               context.read<AuthCubit>().logout();
             },
           ),
+          
+          // Delete Account
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+            leading: Icon(Icons.delete_forever, color: colors.error),
+            title: Text(
+              'Xóa tài khoản',
+              style: textTheme.bodyLarge?.copyWith(
+                color: colors.error,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            subtitle: Text(
+              'Xóa vĩnh viễn dữ liệu',
+              style: textTheme.bodySmall?.copyWith(color: colors.error.withValues(alpha: 0.7)),
+            ),
+            onTap: () => _showDeleteAccountDialog(context),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _showDeleteAccountDialog(BuildContext context) async {
+    final colors = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Xóa tài khoản', style: textTheme.titleLarge?.copyWith(color: colors.error)),
+          content: const Text(
+            'Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản và toàn bộ dữ liệu học tập không? Thao tác này không thể hoàn tác.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Hủy'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: colors.error),
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Xóa vĩnh viễn'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm == true && context.mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final repo = GetIt.I<ProfileRepository>();
+      final result = await repo.deleteProfile();
+      
+      if (context.mounted) {
+        Navigator.of(context).pop(); // Tắt loading
+        
+        result.fold(
+          (failure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Có lỗi xảy ra khi xóa tài khoản')),
+            );
+          },
+          (_) {
+            context.read<AuthCubit>().logout();
+          },
+        );
+      }
+    }
   }
 }

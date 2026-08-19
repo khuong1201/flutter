@@ -15,7 +15,15 @@ export class PrismaCharacterRepository implements ICharacterRepository {
         radicals: {
           include: { radical: true },
         },
-        vocabularies: true,
+        strokes: true,
+        readings: true,
+        vocabularies: {
+          include: {
+            vocabulary: {
+              include: { readings: true },
+            },
+          },
+        },
       },
     });
 
@@ -30,7 +38,15 @@ export class PrismaCharacterRepository implements ICharacterRepository {
         radicals: {
           include: { radical: true },
         },
-        vocabularies: true,
+        strokes: true,
+        readings: true,
+        vocabularies: {
+          include: {
+            vocabulary: {
+              include: { readings: true },
+            },
+          },
+        },
       },
     });
 
@@ -38,11 +54,20 @@ export class PrismaCharacterRepository implements ICharacterRepository {
     return CharacterMapper.toDomain(character);
   }
 
-  async findAll(limit: number = 20, offset: number = 0): Promise<Character[]> {
+  async findAll(limit: number = 20, offset: number = 0, lang?: string): Promise<Character[]> {
     const models = await this.prisma.character.findMany({
+      where: lang ? { language: lang } : undefined,
       include: {
         radicals: { include: { radical: true } },
-        vocabularies: true,
+        strokes: true,
+        readings: true,
+        vocabularies: {
+          include: {
+            vocabulary: {
+              include: { readings: true },
+            },
+          },
+        },
       },
       take: limit,
       skip: offset,
@@ -50,17 +75,31 @@ export class PrismaCharacterRepository implements ICharacterRepository {
     return models.map(CharacterMapper.toDomain);
   }
 
-  async search(query: string, limit: number = 10): Promise<Character[]> {
+  async search(query: string, limit: number = 10, lang?: string): Promise<Character[]> {
+    const whereClause: any = {
+      OR: [
+        { charText: { contains: query, mode: 'insensitive' } },
+        { meaning: { contains: query, mode: 'insensitive' } },
+      ],
+    };
+    
+    if (lang) {
+      whereClause.language = lang;
+    }
+
     const models = await this.prisma.character.findMany({
-      where: {
-        OR: [
-          { charText: { contains: query, mode: 'insensitive' } },
-          { meaning: { contains: query, mode: 'insensitive' } },
-        ],
-      },
+      where: whereClause,
       include: {
         radicals: { include: { radical: true } },
-        vocabularies: true,
+        strokes: true,
+        readings: true,
+        vocabularies: {
+          include: {
+            vocabulary: {
+              include: { readings: true },
+            },
+          },
+        },
       },
       take: limit,
     });
@@ -78,7 +117,15 @@ export class PrismaCharacterRepository implements ICharacterRepository {
       },
       include: {
         radicals: { include: { radical: true } },
-        vocabularies: true,
+        strokes: true,
+        readings: true,
+        vocabularies: {
+          include: {
+            vocabulary: {
+              include: { readings: true },
+            },
+          },
+        },
       },
     });
     return CharacterMapper.toDomain(updated);

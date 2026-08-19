@@ -6,6 +6,7 @@ class SecureStorageHelper {
   SecureStorageHelper(this._storage);
 
   static const String _tokenKey = 'jwt_token';
+  static const String _refreshTokenKey = 'jwt_refresh_token';
   static const String _languageKey = 'app_language';
   static const String _themeKey = 'app_theme';
 
@@ -21,6 +22,18 @@ class SecureStorageHelper {
 
   Future<void> deleteToken() async {
     await _storage.delete(key: _tokenKey);
+  }
+
+  Future<void> saveRefreshToken(String token) async {
+    await _storage.write(key: _refreshTokenKey, value: token);
+  }
+
+  Future<String?> getRefreshToken() async {
+    return await _storage.read(key: _refreshTokenKey);
+  }
+
+  Future<void> deleteRefreshToken() async {
+    await _storage.delete(key: _refreshTokenKey);
   }
 
   Future<void> saveLanguage(String languageCode) async {

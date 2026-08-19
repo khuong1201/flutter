@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:course/core/utils/l10n_extension.dart';
 
 class DrawingBoardWidget extends StatefulWidget {
   final List<Path> outlinePaths;
   final double size;
   final Function(List<List<Offset>>) onStrokesUpdated;
+  final Function(bool)? onDrawing;
 
   const DrawingBoardWidget({
     super.key,
     required this.outlinePaths,
     required this.size,
     required this.onStrokesUpdated,
+    this.onDrawing,
   });
 
   @override
@@ -21,24 +24,22 @@ class _DrawingBoardWidgetState extends State<DrawingBoardWidget> {
   List<Offset> _currentStroke = [];
   bool _showHint = true;
 
-  void _onPanStart(DragStartDetails details) {
-    RenderBox box = context.findRenderObject() as RenderBox;
-    Offset localPosition = box.globalToLocal(details.globalPosition);
+  void _onPointerDown(PointerDownEvent event) {
+    widget.onDrawing?.call(true);
     setState(() {
-      _currentStroke = [localPosition];
+      _currentStroke = [event.localPosition];
       _strokes.add(_currentStroke);
     });
   }
 
-  void _onPanUpdate(DragUpdateDetails details) {
-    RenderBox box = context.findRenderObject() as RenderBox;
-    Offset localPosition = box.globalToLocal(details.globalPosition);
+  void _onPointerMove(PointerMoveEvent event) {
     setState(() {
-      _currentStroke.add(localPosition);
+      _currentStroke.add(event.localPosition);
     });
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onPointerUp(PointerUpEvent event) {
+    widget.onDrawing?.call(false);
     widget.onStrokesUpdated(_strokes);
   }
 
@@ -77,12 +78,12 @@ class _DrawingBoardWidgetState extends State<DrawingBoardWidget> {
           width: widget.size,
           height: widget.size,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colors.surfaceContainerHigh,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+            border: Border.all(color: colors.outlineVariant.withValues(alpha: 0.5)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
+                color: colors.shadow.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               )
@@ -92,30 +93,39 @@ class _DrawingBoardWidgetState extends State<DrawingBoardWidget> {
             borderRadius: BorderRadius.circular(16),
             child: Stack(
               children: [
-                // Hint Layer
+                // Hint Layer (Được lưu thành bitmap tĩnh)
                 if (_showHint)
                   Positioned.fill(
-                    child: CustomPaint(
-                      painter: _HintPainter(
-                        outlinePaths: widget.outlinePaths,
-                        originalSize: 1024,
-                        hintColor: colors.onSurfaceVariant.withValues(alpha: 0.2),
+                    child: RepaintBoundary(
+                      child: CustomPaint(
+                        painter: _HintPainter(
+                          outlinePaths: widget.outlinePaths,
+                          originalSize: 1024,
+                          hintColor: colors.onSurfaceVariant.withValues(alpha: 0.2),
+                        ),
                       ),
                     ),
                   ),
 
-                // Drawing Layer
+                // Drawing Layer (Chỉ vẽ lại lớp này khi tay di chuyển)
                 Positioned.fill(
-                  child: GestureDetector(
-                    onPanStart: _onPanStart,
-                    onPanUpdate: _onPanUpdate,
-                    onPanEnd: _onPanEnd,
-                    child: CustomPaint(
-                      painter: _DrawingPainter(
-                        strokes: _strokes,
-                        strokeColor: colors.primary,
+                  child: RepaintBoundary(
+                    child: Listener(
+                      onPointerDown: _onPointerDown,
+                      onPointerMove: _onPointerMove,
+                      onPointerUp: _onPointerUp,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onVerticalDragUpdate: (_) {},
+                        onHorizontalDragUpdate: (_) {},
+                        child: CustomPaint(
+                          painter: _DrawingPainter(
+                            strokes: _strokes,
+                            strokeColor: colors.primary,
+                          ),
+                          size: Size(widget.size, widget.size),
+                        ),
                       ),
-                      size: Size(widget.size, widget.size),
                     ),
                   ),
                 ),
@@ -132,21 +142,21 @@ class _DrawingBoardWidgetState extends State<DrawingBoardWidget> {
           children: [
             IconButton(
               icon: Icon(_showHint ? Icons.visibility_off : Icons.visibility),
-              tooltip: 'Bật/tắt nét mờ',
+              tooltip: context.l10n.drawingToggleHint,
               onPressed: _toggleHint,
               color: colors.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
             IconButton(
               icon: const Icon(Icons.undo),
-              tooltip: 'Hoàn tác',
+              tooltip: context.l10n.drawingUndo,
               onPressed: _strokes.isNotEmpty ? _undo : null,
               color: colors.onSurfaceVariant,
             ),
             const SizedBox(width: 8),
             IconButton(
               icon: const Icon(Icons.delete_outline),
-              tooltip: 'Xóa toàn bộ',
+              tooltip: context.l10n.drawingClearAll,
               onPressed: _strokes.isNotEmpty ? _clear : null,
               color: colors.error,
             ),

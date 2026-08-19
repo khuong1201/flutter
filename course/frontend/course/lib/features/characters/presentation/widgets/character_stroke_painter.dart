@@ -1,6 +1,79 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
+class GridAndOutlinePainter extends CustomPainter {
+  final List<Path> outlinePaths;
+  final Color outlineColor;
+  final double originalSize;
+  final bool showGrid;
+
+  GridAndOutlinePainter({
+    required this.outlinePaths,
+    required this.outlineColor,
+    required this.originalSize,
+    required this.showGrid,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (showGrid) {
+      final gridPaint = Paint()
+        ..color = Colors.red.withValues(alpha: 0.4)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.0;
+        
+      _drawDashedLine(canvas, Offset(0, size.height / 2), Offset(size.width, size.height / 2), gridPaint);
+      _drawDashedLine(canvas, Offset(size.width / 2, 0), Offset(size.width / 2, size.height), gridPaint);
+    }
+
+    final minDimension = size.width < size.height ? size.width : size.height;
+    final scale = (minDimension / originalSize) * 0.85;
+    
+    canvas.save();
+    canvas.translate(size.width / 2, size.height / 2);
+    canvas.scale(scale, -scale);
+    canvas.translate(-originalSize / 2, -originalSize / 2);
+
+    final outlinePaint = Paint()
+      ..color = outlineColor.withValues(alpha: 0.2)
+      ..style = PaintingStyle.fill;
+
+    for (final path in outlinePaths) {
+      canvas.drawPath(path, outlinePaint);
+    }
+    
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(covariant GridAndOutlinePainter oldDelegate) {
+    return oldDelegate.outlinePaths != outlinePaths || 
+           oldDelegate.showGrid != showGrid;
+  }
+
+  void _drawDashedLine(Canvas canvas, Offset p1, Offset p2, Paint paint) {
+    const int dashWidth = 4;
+    const int dashSpace = 4;
+    double distance = (p2 - p1).distance;
+    double dx = (p2.dx - p1.dx) / distance;
+    double dy = (p2.dy - p1.dy) / distance;
+    
+    double startX = p1.dx;
+    double startY = p1.dy;
+    
+    while (distance >= 0) {
+      canvas.drawLine(
+        Offset(startX, startY),
+        Offset(startX + dx * dashWidth, startY + dy * dashWidth),
+        paint,
+      );
+      startX += dx * (dashWidth + dashSpace);
+      startY += dy * (dashWidth + dashSpace);
+      distance -= (dashWidth + dashSpace);
+    }
+  }
+}
+
 class CharacterStrokePainter extends CustomPainter {
   final Animation<double> animation;
   final List<Path> outlinePaths;
@@ -9,7 +82,6 @@ class CharacterStrokePainter extends CustomPainter {
   final List<double> strokeLengths;
   final double totalLength;
   final Color strokeColor;
-  final Color outlineColor;
   final double originalSize;
 
   CharacterStrokePainter({
@@ -20,49 +92,18 @@ class CharacterStrokePainter extends CustomPainter {
     required this.strokeLengths,
     required this.totalLength,
     required this.strokeColor,
-    required this.outlineColor,
     required this.originalSize,
   }) : super(repaint: animation);
 
   @override
   void paint(Canvas canvas, Size size) {
-    // === VẼ KHUNG Ô LI (GRID TIAN ZI GE - Điền Tự Cách) ===
-    final gridPaint = Paint()
-      ..color = Colors.red.withValues(alpha: 0.4)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-      
-    // Vẽ đường ngang giữa
-    _drawDashedLine(canvas, Offset(0, size.height / 2), Offset(size.width, size.height / 2), gridPaint);
-    // Vẽ đường dọc giữa
-    _drawDashedLine(canvas, Offset(size.width / 2, 0), Offset(size.width / 2, size.height), gridPaint);
-
-    // === VẼ CHỮ ===
-    // 1. Lấy cạnh nhỏ nhất làm chuẩn
     final minDimension = size.width < size.height ? size.width : size.height;
-    
-    // 2. Tính scale và thu nhỏ chữ lại còn 85% (nhân 0.85) để nằm gọn trong ô li
     final scale = (minDimension / originalSize) * 0.85;
     
     canvas.save();
-    
-    // 3. Đưa gốc toạ độ về tâm của widget
     canvas.translate(size.width / 2, size.height / 2);
-    
-    // 4. Scale và Lật ngược trục Y 
     canvas.scale(scale, -scale);
-    
-    // 5. Đưa tâm của khung 1024x1024 về gốc toạ độ
     canvas.translate(-originalSize / 2, -originalSize / 2);
-
-    final outlinePaint = Paint()
-      ..color = outlineColor.withValues(alpha: 0.2)
-      ..style = PaintingStyle.fill;
-
-    // Vẽ toàn bộ khung (outline) mờ bên dưới làm nền
-    for (final path in outlinePaths) {
-      canvas.drawPath(path, outlinePaint);
-    }
 
     if (totalLength == 0) {
       final fillPaint = Paint()
@@ -126,28 +167,5 @@ class CharacterStrokePainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant CharacterStrokePainter oldDelegate) {
     return false; // repaint được trigger qua super(repaint: animation)
-  }
-
-  // Hàm hỗ trợ vẽ nét đứt (dashed line)
-  void _drawDashedLine(Canvas canvas, Offset p1, Offset p2, Paint paint) {
-    const int dashWidth = 4;
-    const int dashSpace = 4;
-    double distance = (p2 - p1).distance;
-    double dx = (p2.dx - p1.dx) / distance;
-    double dy = (p2.dy - p1.dy) / distance;
-    
-    double startX = p1.dx;
-    double startY = p1.dy;
-    
-    while (distance >= 0) {
-      canvas.drawLine(
-        Offset(startX, startY),
-        Offset(startX + dx * dashWidth, startY + dy * dashWidth),
-        paint,
-      );
-      startX += dx * (dashWidth + dashSpace);
-      startY += dy * (dashWidth + dashSpace);
-      distance -= (dashWidth + dashSpace);
-    }
   }
 }

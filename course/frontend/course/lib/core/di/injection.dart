@@ -12,7 +12,17 @@ import 'package:course/features/characters/data/datasources/character_remote_dat
 import 'package:course/features/characters/data/repositories/character_repository_impl.dart';
 import 'package:course/features/characters/domain/repositories/character_repository.dart';
 import 'package:course/features/characters/domain/usecases/get_character_usecase.dart';
+import 'package:course/features/characters/domain/usecases/search_characters_usecase.dart';
 import 'package:course/features/characters/presentation/cubit/character_cubit.dart';
+import 'package:course/features/curriculum/data/repositories/curriculum_repository_impl.dart';
+import 'package:course/features/curriculum/domain/repositories/curriculum_repository.dart';
+import 'package:course/features/curriculum/domain/usecases/complete_lesson_usecase.dart';
+import 'package:course/features/curriculum/domain/usecases/get_lesson_characters_usecase.dart';
+import 'package:course/features/curriculum/domain/usecases/get_lessons_by_level_usecase.dart';
+import 'package:course/features/curriculum/domain/usecases/get_levels_usecase.dart';
+import 'package:course/features/curriculum/domain/usecases/get_roadmap_usecase.dart';
+import 'package:course/features/curriculum/presentation/cubit/curriculum_cubit.dart';
+import 'package:course/features/curriculum/presentation/cubit/lesson_characters_cubit.dart';
 import 'package:course/features/practice/data/datasources/practice_remote_datasource.dart';
 import 'package:course/features/practice/data/repositories/practice_repository_impl.dart';
 import 'package:course/features/practice/domain/repositories/practice_repository.dart';
@@ -21,8 +31,13 @@ import 'package:course/features/practice/domain/usecases/evaluate_handwriting_us
 import 'package:course/features/practice/presentation/cubit/practice_cubit.dart';
 import 'package:course/features/home/data/repositories/home_repository_impl.dart';
 import 'package:course/features/home/domain/repositories/home_repository.dart';
-import 'package:course/features/home/domain/usecases/get_progress_stats_usecase.dart';
+import 'package:course/features/home/domain/usecases/get_contributions_usecase.dart';
 import 'package:course/features/home/presentation/cubit/home_cubit.dart';
+import 'package:course/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:course/features/profile/domain/repositories/profile_repository.dart';
+import 'package:course/features/profile/domain/usecases/get_profile_usecase.dart';
+import 'package:course/features/profile/domain/usecases/get_progress_stats_usecase.dart';
+import 'package:course/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -55,6 +70,7 @@ Future<void> configureDependencies() async {
 
     dio.interceptors.add(TokenInterceptor(
       sl(),
+      baseUrl: dotenv.env['API_URL'] ?? 'https://api.zenithlingua.com',
       onUnauthorized: () {
         sl<AuthCubit>().logout();
       },
@@ -84,12 +100,20 @@ Future<void> configureDependencies() async {
     () => HomeRepositoryImpl(sl()),
   );
 
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(sl()),
+  );
+
   sl.registerLazySingleton<CharacterRemoteDataSource>(
     () => CharacterRemoteDataSourceImpl(dio: sl()),
   );
 
   sl.registerLazySingleton<CharacterRepository>(
     () => CharacterRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  sl.registerLazySingleton<CurriculumRepository>(
+    () => CurriculumRepositoryImpl(sl()),
   );
 
   sl.registerLazySingleton<PracticeRemoteDataSource>(
@@ -109,12 +133,44 @@ Future<void> configureDependencies() async {
     () => RegisterUseCase(sl()),
   );
 
+  sl.registerLazySingleton<GetContributionsUseCase>(
+    () => GetContributionsUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetProfileUseCase>(
+    () => GetProfileUseCase(sl()),
+  );
+
   sl.registerLazySingleton<GetProgressStatsUseCase>(
     () => GetProgressStatsUseCase(sl()),
   );
 
   sl.registerLazySingleton<GetCharacterUseCase>(
     () => GetCharacterUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<SearchCharactersUseCase>(
+    () => SearchCharactersUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetLevelsUseCase>(
+    () => GetLevelsUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetLessonsByLevelUseCase>(
+    () => GetLessonsByLevelUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetRoadmapUseCase>(
+    () => GetRoadmapUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<GetLessonCharactersUseCase>(
+    () => GetLessonCharactersUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<CompleteLessonUseCase>(
+    () => CompleteLessonUseCase(sl()),
   );
 
   sl.registerLazySingleton<SubmitReviewUseCase>(
@@ -136,7 +192,27 @@ Future<void> configureDependencies() async {
 
   sl.registerFactory<HomeCubit>(
     () => HomeCubit(
+      getContributionsUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory<ProfileCubit>(
+    () => ProfileCubit(
+      getProfileUseCase: sl(),
       getProgressStatsUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory<CurriculumCubit>(
+    () => CurriculumCubit(
+      getLevelsUseCase: sl(),
+      getLessonsByLevelUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory<LessonCharactersCubit>(
+    () => LessonCharactersCubit(
+      getLessonCharactersUseCase: sl(),
     ),
   );
 

@@ -125,6 +125,16 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 - **Res (200):**
 *(Trả về object User tương tự như GET /users/profile)*
 
+#### `DELETE /users/profile`
+- **Desc:** Xóa vĩnh viễn tài khoản hiện tại và tất cả dữ liệu liên quan (theo yêu cầu của App Store/Play Store).
+- **Req:** *None*
+- **Res (200):**
+```json
+{
+  "success": true
+}
+```
+
 #### `GET /users/leaderboard`
 - **Desc:** Lấy bảng xếp hạng điểm XP.
 - **Query:** `?limit=10`
@@ -175,6 +185,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 
 #### `GET /lessons/roadmap`
 - **Desc:** Lấy lộ trình học tập của user, gom nhóm theo từng cấp độ và bao gồm trạng thái bài học.
+- **Query:** `?lang=ja` hoặc `?lang=zh` (Tùy chọn, để lọc lộ trình theo ngôn ngữ)
 - **Res (200):**
 ```json
 [
@@ -203,7 +214,10 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
     "language": "ja",
     "meaning": "Hiện tại",
     "audioKey": "audio/ima.mp3",
-    "pronunciation": "いま"
+    "pronunciation": "いま",
+    "strokeData": [
+      { "order": 1, "medianPath": "[[10,20], [15,25]]", "outlinePath": "..." }
+    ]
   }
 ]
 ```
@@ -219,7 +233,7 @@ Tài liệu này tóm tắt toàn bộ luồng hoạt động của ứng dụng
 
 #### `GET /characters`
 - **Desc:** Tìm kiếm chữ Hán.
-- **Query:** `?q=hello&limit=10`
+- **Query:** `?q=hello&limit=10&lang=ja` (Tất cả tham số đều tùy chọn. Dùng `lang` để lọc tiếng Nhật `ja` hoặc Trung `zh`)
 - **Res (200):**
 *(Trả về mảng Object Character thu gọn)*
 

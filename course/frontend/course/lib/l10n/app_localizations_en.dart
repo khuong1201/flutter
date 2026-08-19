@@ -246,4 +246,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get submitSuccess => 'Submitted successfully!';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get homeUserNamePlaceholder => 'Zenith Learner!';
+
+  @override
+  String get homeStatsLoadError => 'Cannot load statistics data';
+
+  @override
+  String get drawingToggleHint => 'Toggle hint outline';
+
+  @override
+  String get drawingUndo => 'Undo';
+
+  @override
+  String get drawingClearAll => 'Clear all';
+
+  @override
+  String get evaluationResultTitle => 'Evaluation Result';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get missingStrokeData => 'Missing stroke data';
 }

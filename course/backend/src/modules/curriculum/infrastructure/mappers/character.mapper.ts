@@ -28,13 +28,13 @@ export class CharacterMapper {
 
     const vocabularies = prismaCharacter.vocabularies
       ? prismaCharacter.vocabularies.map(
-          (v) =>
+          (v: any) =>
             new Vocabulary(
-              v.id,
+              v.vocabulary?.id,
               v.characterId,
-              v.word,
-              v.meaning,
-              v.pronunciation,
+              v.vocabulary?.word,
+              v.vocabulary?.meaning,
+              v.vocabulary?.readings?.[0]?.reading,
             ),
         )
       : undefined;

@@ -107,5 +107,14 @@
   "evaluatePrompt": "How would you grade your drawing (0-5)?",
   "cancel": "Cancel",
   "submitting": "Submitting...",
-  "submitSuccess": "Submitted successfully!"
+  "submitSuccess": "Submitted successfully!",
+  "profileTitle": "Profile",
+  "homeUserNamePlaceholder": "Zenith Learner!",
+  "homeStatsLoadError": "Cannot load statistics data",
+  "drawingToggleHint": "Toggle hint outline",
+  "drawingUndo": "Undo",
+  "drawingClearAll": "Clear all",
+  "evaluationResultTitle": "Evaluation Result",
+  "close": "Close",
+  "missingStrokeData": "Missing stroke data"
 }

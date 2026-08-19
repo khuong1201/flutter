@@ -1,5 +1,6 @@
 import 'package:course/core/utils/l10n_extension.dart';
 import 'package:course/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:course/core/widgets/shared_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,6 +21,9 @@ class _SplashPageState extends State<SplashPage>
   @override
   void initState() {
     super.initState();
+
+    // Khởi chạy ngầm preload cache từ màn hình Splash
+    SharedLoadingWidget.preloadCaches();
 
     _progressController = AnimationController(
       vsync: this,

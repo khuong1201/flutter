@@ -84,7 +84,7 @@ class CharacterModel extends CharacterEntity {
               .toList() ??
           [],
       audioKey: json['audioKey'] as String?,
-      strokes: (json['strokes'] as List<dynamic>?)
+      strokes: (json['strokeData'] as List<dynamic>?)
               ?.map((e) => StrokeDataModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
@@ -94,6 +94,7 @@ class CharacterModel extends CharacterEntity {
           [],
       vocabularies: (json['vocabularies'] as List<dynamic>?)
               ?.map((e) => VocabularyModel.fromJson(e as Map<String, dynamic>))
+              .where((v) => v.word.trim().isNotEmpty)
               .toList() ??
           [],
     );

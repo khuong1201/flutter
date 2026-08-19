@@ -39,6 +39,7 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) => emit(AuthError(failure)),
       (userToken) async {
         await secureStorage.saveToken(userToken.token);
+        await secureStorage.saveRefreshToken(userToken.refreshToken);
         emit(AuthAuthenticated(userToken.token));
       }
     );
@@ -52,6 +53,7 @@ class AuthCubit extends Cubit<AuthState> {
       (failure) => emit(AuthError(failure)),
       (userToken) async {
         await secureStorage.saveToken(userToken.token);
+        await secureStorage.saveRefreshToken(userToken.refreshToken);
         emit(AuthRegisterSuccess()); // Emit this for UI handling
         emit(AuthAuthenticated(userToken.token)); // Then authenticate
       }
@@ -78,6 +80,7 @@ class AuthCubit extends Cubit<AuthState> {
 
     try {
       await secureStorage.deleteToken(); 
+      await secureStorage.deleteRefreshToken();
       emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(UnknownFailure()));

@@ -11,6 +11,12 @@ class StrokeAnimationWidget extends StatefulWidget {
   final double size;
   final Color strokeColor;
   final Color outlineColor;
+  final bool loop;
+  final bool showGrid;
+  final bool showControls;
+  final bool animate;
+  final double animationSpeedMultiplier;
+  final VoidCallback? onAnimationCompleted;
 
   const StrokeAnimationWidget({
     super.key,
@@ -18,6 +24,12 @@ class StrokeAnimationWidget extends StatefulWidget {
     this.size = 200,
     this.strokeColor = Colors.black,
     this.outlineColor = Colors.grey,
+    this.loop = false,
+    this.showGrid = true,
+    this.showControls = true,
+    this.animate = true,
+    this.animationSpeedMultiplier = 1.0,
+    this.onAnimationCompleted,
   });
 
   @override
@@ -40,22 +52,49 @@ class _StrokeAnimationWidgetState extends State<StrokeAnimationWidget>
     _parsePaths();
     _controller = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 2000 + widget.strokeData.length * 400), // Vẽ chậm lại
+      duration: Duration(milliseconds: ((800 + widget.strokeData.length * 150) * widget.animationSpeedMultiplier).toInt()), 
     );
 
     _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
+      if (status == AnimationStatus.completed) {
+        widget.onAnimationCompleted?.call();
+        if (widget.loop && mounted) {
+          Future.delayed(const Duration(seconds: 1), () {
+            if (mounted) {
+              _controller.forward(from: 0);
+            }
+          });
+        } else if (mounted) {
+          setState(() => _isPlaying = false);
+        }
+      } else if (status == AnimationStatus.dismissed) {
         if (mounted) setState(() => _isPlaying = false);
       }
     });
 
     // Bắt đầu animation ngay khi render xong (sau 500ms delay cho mượt)
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        _controller.forward();
-        setState(() => _isPlaying = true);
+    if (widget.animate) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          _controller.forward();
+          setState(() => _isPlaying = true);
+        }
+      });
+    } else {
+      _controller.value = 1.0;
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant StrokeAnimationWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.strokeData != oldWidget.strokeData) {
+      _parsePaths();
+      _controller.duration = Duration(milliseconds: ((800 + widget.strokeData.length * 150) * widget.animationSpeedMultiplier).toInt());
+      if (_isPlaying) {
+        _controller.forward(from: 0);
       }
-    });
+    }
   }
 
   void _parsePaths() {
@@ -127,26 +166,44 @@ class _StrokeAnimationWidgetState extends State<StrokeAnimationWidget>
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
     return GestureDetector(
       onTap: _togglePlayPause,
       child: Container(
         width: widget.size,
         height: widget.size,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: widget.showGrid ? colors.surfaceContainerHigh : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
-          boxShadow: [
+          border: widget.showGrid ? Border.all(color: colors.outlineVariant.withValues(alpha: 0.5)) : null,
+          boxShadow: widget.showGrid ? [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: colors.shadow.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             )
-          ],
+          ] : null,
         ),
         child: Stack(
           children: [
-            // Khung và Nét vẽ
+            // Nền chữ mờ và Grid (Được bọc RepaintBoundary để cache thành Bitmap)
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    painter: GridAndOutlinePainter(
+                      outlinePaths: _outlinePaths,
+                      outlineColor: widget.outlineColor,
+                      originalSize: 1024,
+                      showGrid: widget.showGrid,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            // Nét vẽ động (Chỉ vẽ lại lớp này mỗi khung hình)
             Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
@@ -159,25 +216,25 @@ class _StrokeAnimationWidgetState extends State<StrokeAnimationWidget>
                     strokeLengths: _strokeLengths,
                     totalLength: _totalLength,
                     strokeColor: widget.strokeColor,
-                    outlineColor: widget.outlineColor,
                     originalSize: 1024,
                   ),
                 ),
               ),
             ),
-            Positioned(
-              left: 8,
-              top: 8,
-              child: FloatingActionButton.small(
-                heroTag: null,
-                elevation: 0,
-                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
-                foregroundColor: Theme.of(context).colorScheme.primary,
-                onPressed: _togglePlayPause,
-                tooltip: _isPlaying ? context.l10n.animationPauseTooltip : context.l10n.animationPlayTooltip,
-                child: Icon(_isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
+            if (widget.showControls)
+              Positioned(
+                left: 8,
+                top: 8,
+                child: FloatingActionButton.small(
+                  heroTag: null,
+                  elevation: 0,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.8),
+                  foregroundColor: Theme.of(context).colorScheme.primary,
+                  onPressed: _togglePlayPause,
+                  tooltip: _isPlaying ? context.l10n.animationPauseTooltip : context.l10n.animationPlayTooltip,
+                  child: Icon(_isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
+                ),
               ),
-            ),
           ],
         ),
       ),

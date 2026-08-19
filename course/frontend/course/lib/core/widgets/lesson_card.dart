@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:course/features/characters/domain/entities/character_entity.dart';
+import 'package:course/features/characters/presentation/widgets/stroke_animation_widget.dart';
+
 class LessonCard extends StatelessWidget {
   final String title;
   final String? subtitle;
   final String languageChar;
   final VoidCallback onTap;
+  final List<StrokeDataEntity>? strokeData;
+  final List<Color>? gradientColors;
 
   const LessonCard({
     super.key,
@@ -12,6 +17,8 @@ class LessonCard extends StatelessWidget {
     this.subtitle,
     required this.languageChar,
     required this.onTap,
+    this.strokeData,
+    this.gradientColors,
   });
 
   @override
@@ -22,44 +29,79 @@ class LessonCard extends StatelessWidget {
 
     final isDark = theme.brightness == Brightness.dark;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: colors.surface,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: isDark
-              ? null
-              : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 16,
-                    offset: const Offset(0, 8),
+    return Container(
+      decoration: BoxDecoration(
+        color: gradientColors == null ? colors.surface : null,
+        gradient: gradientColors != null
+            ? LinearGradient(
+                colors: gradientColors!,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+            : null,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: (gradientColors?.first ?? Colors.black).withValues(alpha: 0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+        border: isDark && gradientColors == null
+            ? Border.all(
+                color: colors.outline.withValues(alpha: 0.3),
+                width: 1,
+              )
+            : null,
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: onTap,
+          highlightColor: colors.onSurface.withValues(alpha: 0.1),
+          splashColor: colors.onSurface.withValues(alpha: 0.1),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+            // Background Animation
+            if (strokeData != null && strokeData!.isNotEmpty)
+              Positioned(
+                right: -40,
+                bottom: -40,
+                child: IgnorePointer(
+                  child: StrokeAnimationWidget(
+                    strokeData: strokeData!,
+                    size: 240,
+                    strokeColor: (gradientColors == null ? colors.primary : Colors.white).withValues(alpha: 0.15),
+                    outlineColor: Colors.transparent,
+                    loop: false,
+                    animate: false,
+                    showGrid: false,
+                    showControls: false,
                   ),
-                ],
-          border: isDark
-              ? Border.all(
-                  color: colors.outline.withValues(alpha: 0.3),
-                  width: 1,
-                )
-              : null,
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              right: -10,
-              bottom: 10,
-              child: Text(
-                languageChar,
-                style: text.displayLarge?.copyWith(
-                  fontSize: 80,
-                  color: colors.primary.withValues(alpha: 0.1),
-                  height: 1,
-                  fontWeight: FontWeight.w900,
+                ),
+              )
+            else
+              Positioned(
+                right: 8,
+                bottom: -8,
+                child: Text(
+                  languageChar,
+                  style: text.displayLarge?.copyWith(
+                    fontSize: 60,
+                    color: (gradientColors == null ? colors.primary : Colors.white).withValues(alpha: 0.2),
+                    height: 1,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -73,16 +115,18 @@ class LessonCard extends StatelessWidget {
                           Text(
                             title,
                             style: text.headlineLarge?.copyWith(
-                              fontSize: 20,
-                              color: colors.onSurface,
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: gradientColors == null ? colors.onSurface : Colors.white,
                             ),
                           ),
                           if (subtitle != null) ...[
                             const SizedBox(height: 4),
                             Text(
                               subtitle!,
-                              style: text.bodyMedium?.copyWith(
-                                color: colors.onSurfaceVariant,
+                              style: text.titleMedium?.copyWith(
+                                color: gradientColors == null ? colors.onSurfaceVariant : Colors.white.withValues(alpha: 0.8),
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ],
@@ -96,6 +140,9 @@ class LessonCard extends StatelessWidget {
           ],
         ),
       ),
-    );
+    ),
+      ),
+        ),
+      );
   }
 }
