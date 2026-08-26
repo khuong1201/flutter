@@ -3,6 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../components/cards/glass_card.dart';
 import '../../components/navigation/floating_bottom_nav.dart';
 import '../../components/overlays/modern_bottom_sheet.dart';
+import '../showcase/components_showcase_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -27,21 +28,41 @@ class DashboardScreen extends StatelessWidget {
                     Text("Tuấn Nguyễn", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Colors.black87)),
                   ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))
-                    ]
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
-                    onPressed: () {
-                      showModernBottomSheet(context);
-                    },
-                  ),
-                )
+                Row(
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))
+                        ]
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.widgets_rounded, color: Colors.blueAccent),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => const ComponentsShowcaseScreen()));
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 5))
+                        ]
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.notifications_none_rounded, color: Colors.black87),
+                        onPressed: () {
+                          showModernBottomSheet(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
