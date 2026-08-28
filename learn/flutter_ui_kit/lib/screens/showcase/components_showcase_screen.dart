@@ -24,6 +24,11 @@ import '../../components/overlays/spotlight_effect.dart';
 import '../../components/magic/origami_fold.dart';
 import '../../components/carousels/tinder_swipe_deck.dart';
 import '../../components/navigation/curved_bottom_nav.dart';
+import '../../components/carousels/liquid_swipe_carousel.dart';
+import '../../components/cards/spatial_ui_card.dart';
+import '../../components/navigation/morphing_screen.dart';
+import '../../components/inputs/wheel_dial_picker.dart';
+import '../../components/overlays/magic_particle_touch.dart';
 import 'dart:ui'; // Bắt buộc cho BackdropFilter
 
 class ComponentsShowcaseScreen extends StatefulWidget {
@@ -112,6 +117,47 @@ class _ComponentsShowcaseScreenState extends State<ComponentsShowcaseScreen> {
             child: ListView(
               padding: const EdgeInsets.only(top: 100, bottom: 20),
               children: [
+                // Cụm Giai đoạn 7: Đa thể loại (Multi-Genre)
+                _buildSectionTitle('🚀 1. Thể Loại Game (Magic Particle)'),
+                const Center(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 250,
+                    child: MagicParticleTouch(
+                      child: Center(child: Text("Vuốt tay vào đây!", style: TextStyle(color: Colors.white70, fontSize: 24))),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+                _buildSectionTitle('🚀 2. Thể Loại Không Gian (Spatial UI)'),
+                const Center(
+                  child: SpatialUICard(
+                    child: Center(
+                      child: Text("Thẻ kính mờ\n(Nghiêng để thấy vệt sáng)", textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 40),
+                _buildSectionTitle('🚀 3. Thể Loại Liền Mạch (Morphing)'),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: MorphingScreen(),
+                ),
+
+                const SizedBox(height: 40),
+                _buildSectionTitle('🚀 4. Thể Loại Cổ Điển (Wheel Dial)'),
+                const Center(child: WheelDialPicker()),
+
+                const SizedBox(height: 40),
+                _buildSectionTitle('🚀 5. Thể Loại Chất Lỏng (Liquid Swipe)'),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: LiquidSwipeCarousel(),
+                ),
+
+                const SizedBox(height: 60),
                 // Cụm Giai đoạn 6: The Final Bosses
                 _buildSectionTitle('🌟 1. Đèn Pin Rọi Điểm (Vuốt ngón tay)'),
                 const Center(
